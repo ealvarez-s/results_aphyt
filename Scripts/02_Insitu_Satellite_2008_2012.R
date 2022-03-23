@@ -3,9 +3,6 @@ source("00_Summary_EDITME.R")
 ##########################################
 ## SATELLITE ##  SEASONAL AND ANNUAL MEANS
 ##########################################
-## ftp://oc-cci-data:ELaiWai8ae@ftp.rsg.pml.ac.uk/occci-v4.1/geographic/netcdf/monthly/
-
-
 
 
 
