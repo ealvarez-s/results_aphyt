@@ -1,21 +1,18 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-library(RNetCDF) 
-library(akima)
-library(abind)
-library(chron) 
-library(unikn)
-library(lmodel2)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ###############################
 ## BIO-OPTICAL RELATIONSHIPS
 ###############################
 
-    o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/",sep="")        
-    p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/",sep="")
-    #path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="")
-    experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
-    s_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+  o_dir<-paste(global_path,"Res_model/",sep="")        
+  p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+  path_figures<-paste(global_path,"Figures/",sep="")
+  # List of simulations
+  experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+  s_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
+  is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+
           modelnames<-experimentos$name[c(21,9)]
           ruta<-experimentos$path[c(21,9)]
           nombre <- c(expression(paste({a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
@@ -45,8 +42,9 @@ png(file=paste(path_figures,"Figure9_chla_vs_Aph.png", sep=""), width = 1320, he
 ##############     
             modelo_lambda <- c(400.0, 425.0, 450.0, 475.0, 500.0, 525.0, 550.0, 575.0,600.0, 625.0, 650.0, 675.0, 700.0)
             lambda_extremos<-sort(unique(c(modelo_lambda[-length(modelo_lambda)]+(diff(modelo_lambda)/2),400,700)))
-          #### Valente  -(awi&nomad) 
-            s_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/total_tables/",sep="")
+            s_dir <- paste(global_path,"Dat_observations/optics/total_tables/",sep="")
+            
+        #### Valente  -(awi&nomad) 
             load(paste(s_dir,"Valente2_ChlaRssIOP_modbands12.RData", sep=""))       
             #names(tabla_total)
             equis<-log10(tabla_total$Chla_HPLC.mg.m..3.)
@@ -75,7 +73,7 @@ png(file=paste(path_figures,"Figure9_chla_vs_Aph.png", sep=""), width = 1320, he
                points(log10(newx), log10(newc), type="l", col="black", lwd=2)
             
           #### Bracher         
-            load(paste(s_dir,"Astrid5_IopHplc2nm_modbands12.RData", sep=""))       
+            load(paste(s_dir,"Astrid6_IopHplc2nm_modbands12.RData", sep=""))       
             equis<-log10(tabla_total$MTChla)
             ies<-log10(tabla_total$aph_450)
             flag3<-tabla_total[,which(colnames(tabla_total)=="MYFLAG3")]
@@ -217,9 +215,9 @@ dev.off()
 ############## 
             modelo_lambda <- c(400.0, 425.0, 450.0, 475.0, 500.0, 525.0, 550.0, 575.0,600.0, 625.0, 650.0, 675.0, 700.0)
             lambda_extremos<-sort(unique(c(modelo_lambda[-length(modelo_lambda)]+(diff(modelo_lambda)/2),400,700)))
+            s_dir <- paste(global_path,"Dat_observations/optics/total_tables/",sep="")
             
             ### Valente
-            s_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/total_tables/",sep="")
             load(paste(s_dir,"Valente2_ChlaRssIOP_modbands12.RData", sep=""))       
             equis<-log10(tabla_total$Chla_HPLC.mg.m..3.)
             ies<-tabla_total$aph_450/tabla_total$Chla_HPLC.mg.m..3.
@@ -247,7 +245,7 @@ dev.off()
             newc <- fit4$regression.results[1,2]+(newx*fit4$regression.results[1,3])
 
             ### Bracher
-            load(paste(s_dir,"Astrid5_IopHplc2nm_modbands12.RData", sep=""))       
+            load(paste(s_dir,"Astrid6_IopHplc2nm_modbands12.RData", sep=""))       
             equis<-log10(tabla_total$MTChla)
             ies<-tabla_total$aph_450/tabla_total$MTChla
             equis[equis<=-2]<-NA
@@ -352,7 +350,7 @@ dev.off()
             
 # OBSERVATIONS in depth
 #################       
-      o_dir <-paste(OS,"Datos/Ser_Stan/global_14_aphyt/radtrans_marshall_oasim_aphyvar_initial_carbon_1slope_2group_fix", sep="")
+      o_dir <-paste(global_path,"Res_model", sep="")
       archivo<-"/grid.nc"
       filename <- paste(o_dir,archivo, sep="")
       filen <- open.nc(filename)
@@ -367,8 +365,8 @@ dev.off()
             lambda_extremos<-sort(unique(c(modelo_lambda[-length(modelo_lambda)]+(diff(modelo_lambda)/2),400,700)))
             
             ### Bracher
-            s_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/total_tables/",sep="")
-            load(paste(s_dir,"Astrid5_IopHplc2nm_modbands12.RData", sep=""))       
+            s_dir <- paste(global_path,"Dat_observations/optics/total_tables/",sep="")
+            load(paste(s_dir,"Astrid6_IopHplc2nm_modbands12.RData", sep=""))       
             #names(tabla_total)
             equis  <-tabla_total$latitude
             ies    <-tabla_total$depth

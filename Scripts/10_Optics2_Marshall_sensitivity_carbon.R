@@ -1,14 +1,13 @@
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ###########################################################
 ### SCALE OPTICAL PROPERTIES to mean(aph) in literature ###                                                  
 ###########################################################
 
 ## Starting from the initial: optics_phyto_recom_carbon.dat
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-library(unikn)
-library(plot3D)
-
-dir<-paste(OS, "Datos/Res_C20_radtrans/phyto_optics/",sep="")
+dir<-paste(global_path,"Phyto_optics/",sep="") 
+path_figures<-paste(global_path,"Figures/",sep="")
 
     
 ###################################################################    
@@ -541,12 +540,10 @@ dir<-paste(OS, "Datos/Res_C20_radtrans/phyto_optics/",sep="")
     
 #############################################################    
 ## Create all phyto_optics.dat for sensitivity analysis    ##    
-#############################################################    
-    
-    dir<-"/Users/ealvarez/Datos/Res_C20_radtrans/phyto_optics/"
+#############################################################
     load(paste(dir,"tabla_total_sensitivity.RData", sep=""))
     
-    png(file="/Users/ealvarez/Datos/Res_C20_radtrans/phyto_optics/sensitivity/Figure_sensitivity.png", width = 1200, height = 800, units = "px", pointsize = 15, bg = "white")  
+    png(file=paste(dir,"sensitivity/Figure_sensitivity_test.png", sep=""), width = 1200, height = 800, units = "px", pointsize = 15, bg = "white")  
     
       layout(matrix(c(1:20),ncol=4,byrow=T),widths=c(1,1,1,1)) 
       par(mar=c(1,4,0,1)) 
@@ -643,8 +640,7 @@ dir<-paste(OS, "Datos/Res_C20_radtrans/phyto_optics/",sep="")
                             format(round(datos24,9), nsmall = 9))    
       
       # SAVE phyto_optics.dat file
-      pdir<-"/Users/ealvarez/Datos/Res_C20_radtrans/"
-      sink(paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""))
+      sink(paste(dir,"sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""))
       # HEADER
       cat("Computed in 10_Optics2_Marshall_sensitivity_carbon.R\n")
       cat("# aPH compiled from literature (absorption_spectra.csv) (m2 mgChla-1)\n")    
@@ -654,11 +650,11 @@ dir<-paste(OS, "Datos/Res_C20_radtrans/phyto_optics/",sep="")
       cat("Format I4,3F10.4,F20.14\n")
       
       cat("*** Others ***\n")    
-      write.table(datosothers, file=paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""),
+      write.table(datosothers, file=paste(dir,"sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""),
                   sep = "    ", row.names = FALSE, col.names = FALSE, quote = FALSE, append=TRUE)
       #sep = "\t"
-      cat("*** Diatom ***\n",   file=paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""), append = TRUE)
-      write.table(datosdiatoms, file=paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""),
+      cat("*** Diatom ***\n",   file=paste(dir,"sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""), append = TRUE)
+      write.table(datosdiatoms, file=paste(dir,"sensitivity/optics_phyto_recom_carbon_",i,".dat",sep=""),
                   sep = "    ", row.names = FALSE, col.names = FALSE, quote = FALSE, append=TRUE)
       sink()       
       

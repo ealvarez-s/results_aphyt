@@ -1,12 +1,5 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-source(paste(OS,"Programas/Funciones_varios/functions.r", sep=""))
-library(Hmisc)
-library(plotrix)
-library(plot3D)
-library(abind)
-library(RNetCDF)
-library(akima)
-library(unikn)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ## Sensitivity analysis and metrics
 ## Chla, Reflectance, IOP's, PPC
@@ -15,26 +8,25 @@ library(unikn)
 ## METRICS CORRELATION with SATELITE/In situ
 ############################################
 
-        o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/", sep="")       
-        p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/", sep="")
-        path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="")
-        experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
-        
+o_dir<-paste(global_path,"Res_model/",sep="")        
+p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+path_figures<-paste(global_path,"Figures/",sep="")
+# List of simulations
+experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+
         modelnames<-experimentos$name[c(10:29,9)]
-        ruta<-paste(OS,substring(experimentos$path[c(10:29,9)],17,100), sep="")
+        ruta<-o_dir   #paste(OS,substring(experimentos$path[c(10:29,9)],17,100), sep="")
         puntos<-rep(21,length(modelnames))
         nombre <- substring(modelnames,19,100)
         simbolos<-letters[seq( from = 1, to = 20 )] 
         #nombre <- c(expression(paste("EXP-1: ",{{"a*"}}[PH],"(", lambda, ") constant",sep="")),
         #expression(paste("EXP-2: ",{{"a*"}}[PH],"(", lambda, ") variable",sep="")))
-        
-        
-        
+    
         
         
 ## Reference values for global(aph) and global(aps)
 ###################        
-                pdir<-paste(OS,"Datos/Res_C20_radtrans/",sep="")
+                pdir<-paste(global_path,"Phyto_optics/",sep="") 
                 wd <- c(12.5,rep(25,11),12.5)
                 apps<-rep(NA, length=length(modelnames))
                 apph<-rep(NA, length=length(modelnames))
@@ -56,9 +48,9 @@ library(unikn)
              ### Diatoms
                       alpha <- 0.19/86400
                       if (w==21) {
-                      filename<-paste(pdir,"phyto_optics/optics_phyto_recom_carbon.dat",sep="")  
+                      filename<-paste(pdir,"optics_phyto_recom_carbon.dat",sep="")  
                       } else{
-                      filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",w,".dat",sep="")}
+                      filename<-paste(pdir,"sensitivity/optics_phyto_recom_carbon_",w,".dat",sep="")}
                       datos <- read.table(filename, skip=21)
                       lambda <- datos[,1]
                       # AP_PS
@@ -78,9 +70,9 @@ library(unikn)
              ### Small Phyto
                       alpha <- 0.14/86400
                       if (w==21) {
-                      filename<-paste(pdir,"phyto_optics/optics_phyto_recom_carbon.dat",sep="")  
+                      filename<-paste(pdir,"optics_phyto_recom_carbon.dat",sep="")  
                       } else{
-                      filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",w,".dat",sep="")
+                      filename<-paste(pdir,"sensitivity/optics_phyto_recom_carbon_",w,".dat",sep="")
                       }
                       datos <- read.table(filename, skip=7, nrows=13)
                       lambda <- datos[,1]
@@ -101,7 +93,7 @@ library(unikn)
                           
                       # MODEL
                       modelname<-modelnames[w]
-                      o_dir<-ruta[w]              
+                      #o_dir<-ruta[w]              
                       load(paste(p_dir,"2cloro_dia/",modelname,".RData",sep=""))
                       diatoms <- res
                       #dim(diatoms)
@@ -117,7 +109,7 @@ library(unikn)
         
       tablaS1<-data.frame(c(simbolos,"21"),PEAK_apph_phy,MEDIA_apph_phy,PEAK_apps_phy,MEDIA_apps_phy,MEDIA_qy_phy,
                                    PEAK_apph_dia,MEDIA_apph_dia,PEAK_apps_dia,MEDIA_apps_dia,MEDIA_qy_dia, apps,  apph)    
-      write.csv(tablaS1, file=paste(OS,"Documentos/5_Trabajos/20_Radtrans/table_S1.csv",sep=""))       
+      write.csv(tablaS1, file=paste(pdir,"table_S1.csv",sep=""))       
                 
       
       
@@ -134,26 +126,26 @@ library(unikn)
 ########################         
         ##### In situ 
         #### MAREDAT and others
-        is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids_pigments",sep="")  
+        is_dir <- paste(global_path,"Dat_observations/HPLC/grids_pigments",sep="")  
         load(paste(is_dir,"/TChla_insitu_new2.RData",sep=""))                           
         longitude<-as.numeric(dimnames(TChla_ALL)$x)
         latitude<-as.numeric(dimnames(TChla_ALL)$y)        
         matriz1  <- (apply(TChla_ALL[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE))/1e+3 # ng L-1 to ug L-1
         ##### In situ Valente and others
-        is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
-        load(paste(is_dir,"media_annual_Chla.Rdata",sep=""))
+        is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="") 
+        load(paste(is_dir,"/media_annual_Chla.Rdata",sep=""))
         matriz2  <- apply(res[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE) # ug L-1
         nueva<-abind(matriz1, matriz2, along=0.5)
         matriz<-apply(nueva,MARGIN=c(2,3), mean, na.rm=TRUE)        
         
         # SAT
-        o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+        o_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
         load(paste(o_dir,"climatologies_2012_2018/media_anual_log_chl_OCCCI_2012_2018.RData", sep=""))
         media <- apply(res, MARGIN=c("x","y"), FUN=mean, na.rm=TRUE)        
    
     for (w in 1:length(modelnames)){ 
         modelname<-modelnames[w]
-        o_dir<-ruta[w]              
+        #o_dir<-ruta[w]              
         # MODEL
         load(paste(p_dir,"1cloro_log/",modelname,".RData",sep=""))
         mod <- res
@@ -215,7 +207,7 @@ library(unikn)
         z <- mod[,,12]
 
           # SAT
-          o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+          o_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
           landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
           load(paste(o_dir,"climatologies_2012_2018/media_seasonal_Rrs_2deg_OCCCI_2012_2018.RData",sep=""))
           res <- med
@@ -240,7 +232,7 @@ library(unikn)
         
    
        ##### In situ Rrs
-       is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+       is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
        load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))           
        #dim(matriz_annual)
        #lambda
@@ -365,7 +357,7 @@ library(unikn)
 ### Atot
 ########        
      # SAT
-     o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+     o_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
      load(paste(o_dir,"climatologies_2012_2018/media_anual_Atot_2deg_OCCCI_2012_2018.RData",sep=""))
      landa_sat <- dimnames(res)$l
      sat <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)        
@@ -391,11 +383,11 @@ library(unikn)
 ### Aph
 ########
        # In situ
-       is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+       is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="") 
        load(paste(is_dir,"/media_annual_Aph.Rdata",sep=""))           
      
        # SAT
-       o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+       o_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
        load(paste(o_dir,"climatologies_2012_2018/media_anual_Aph_2deg_OCCCI_2012_2018.RData",sep=""))
        landa_sat <- dimnames(res)$l
        sat <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)        
@@ -428,7 +420,7 @@ library(unikn)
 ### Anap
 ########       
        # In situ
-       is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+       is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="") 
        load(paste(is_dir,"/media_annual_Anap.Rdata",sep=""))           
 
        for (w in 1:length(modelnames)){ 
@@ -449,7 +441,7 @@ library(unikn)
 ### Acdom
 #########       
        # In situ
-       is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+       is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="") 
        load(paste(is_dir,"/media_annual_Acdom.Rdata",sep=""))           
        
        for (w in 1:length(modelnames)){ 
@@ -470,7 +462,7 @@ library(unikn)
 ### Ap
 ##########       
        # In situ
-       is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+       is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="") 
        load(paste(is_dir,"/media_annual_Ap.Rdata",sep=""))           
        
        for (w in 1:length(modelnames)){ 
@@ -491,7 +483,7 @@ library(unikn)
 ### Adg
 ##########       
          # SAT
-         o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+         o_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
          load(paste(o_dir,"climatologies_2012_2018/media_anual_Adg_2deg_OCCCI_2012_2018.RData",sep=""))
          landa_sat <- dimnames(res)$l
          sat <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)        
@@ -516,7 +508,7 @@ library(unikn)
 ### Bbp
 ###########         
            # SAT
-           o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+           o_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
            load(paste(o_dir,"climatologies_2012_2018/media_anual_Bbp_2deg_OCCCI_2012_2018.RData",sep=""))
            landa_sat <- dimnames(res)$l
            sat <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
@@ -546,7 +538,7 @@ library(unikn)
 ########        
 
         # In situ 
-        is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids_pigments",sep="")  
+        is_dir <- paste(global_path,"Dat_observations/HPLC/grids_pigments",sep="")  
         load(paste(is_dir,"/PPCinsitu_new3.RData",sep=""))
         matriz1  <- apply(PPCinsitu_ALL[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE)
 
@@ -608,7 +600,7 @@ library(unikn)
              cex.lab=sizelab, cex.axis=sizeaxis) 
         
         for (i in c(1:20)){
-          filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+          filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
           datos <- read.table(filename, skip=7, nrows=13)
           lambda <- datos[,1]
           # AP
@@ -642,7 +634,7 @@ library(unikn)
              cex.lab=sizelab, cex.axis=sizeaxis) 
         
         for (i in c(1:20)){
-          filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+          filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
           datos <- read.table(filename, skip=21)
           lambda <- datos[,1]
           # AP
@@ -693,13 +685,13 @@ library(unikn)
         mtext(4,text=expression(paste(alpha," (",m^2," mmolC ", " mg", Chl^-1, J^-1," x 86400s/d)")),
               line=2,at=0.022,cex=0.9)
         
-        load(paste(pdir,"phyto_optics/tabla_total_sensitivity.Rdata",sep=""))     
+        load(paste(global_path,"Phyto_optics/tabla_total_sensitivity.Rdata",sep=""))     
         #tabla_total
 
         for (i in c(1:20)){
           ### Diatoms
           alpha <- 0.19/86400
-          filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+          filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
           datos <- read.table(filename, skip=21)
           lambda <- datos[,1]
           # AP_PS
@@ -713,7 +705,7 @@ library(unikn)
           points(x=QYi, y=media2, pch=22, cex=0.75,  bg=claros[i], col=claros[i])          
           ### Small Phyto
           alpha <- 0.14/86400
-          filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+          filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
           datos <- read.table(filename, skip=7, nrows=13)
           lambda <- datos[,1]
           # AP_PS
@@ -730,7 +722,7 @@ library(unikn)
                   i=12
                   # Diatoms
                   alpha <- 0.19/86400
-                  filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+                  filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
                   datos <- read.table(filename, skip=21)
                   lambda <- datos[,1]
                   # AP_PS
@@ -746,7 +738,7 @@ library(unikn)
                            
                   ### Small Phyto
                   alpha <- 0.14/86400
-                  filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+                  filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
                   datos <- read.table(filename, skip=7, nrows=13)
                   lambda <- datos[,1]
                   # AP_PS
@@ -763,7 +755,7 @@ library(unikn)
                   i=3 
                   ### Diatoms
                   alpha <- 0.19/86400
-                  filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+                  filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
                   datos <- read.table(filename, skip=21)
                   lambda <- datos[,1]
                   # AP_PS
@@ -778,7 +770,7 @@ library(unikn)
                   
                   ### Small Phyto
                   alpha <- 0.14/86400
-                  filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+                  filename<-paste(global_path,"Phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
                   datos <- read.table(filename, skip=7, nrows=13)
                   lambda <- datos[,1]
                   # AP_PS

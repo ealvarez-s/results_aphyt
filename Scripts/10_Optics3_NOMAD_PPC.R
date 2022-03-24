@@ -1,5 +1,5 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-library(chron)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 #############################################
 ## Make aPH variable based on PPC:TChla ratio
@@ -9,14 +9,15 @@ library(chron)
 # Start with best constant curve: optics_phyto_recom_carbon.dat == optics_phyto_recom_carbon_12.dat
 # Find the best shape descriptor (using the NOMADv2 dataset)
 # Re-construct aPH based on shape descriptor and put it into REcoM2 code (recom_aphyt.F90)
-
+path_figures<-paste(global_path,"Figures/",sep="")
+s_dir<-paste(global_path,"Phyto_optics/",sep="") 
 
 ###########
 ## NOMAD v2 : In situ bio-optical data + HPLC ##  Werdell & Bailey 2005
 ###########
 # Phytoplankton absorption spectra and associated HPLC pigment measurements
-# were obtained from the NASA NOMAD-SeaBASS data archive [Werdell and Bailey, 2005]. 
-    p_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/NASA_NOMAD/",sep="")
+# were obtained from the NASA NOMAD-SeaBASS data archive [Werdell and Bailey, 2005]
+    p_dir <- paste(global_path,"Dat_observations/",sep="") 
     nomadv2<-read.csv(paste(p_dir,"NOMAD_v2.csv", sep=""))
 
     # total particulate = phyto + detritus
@@ -56,7 +57,6 @@ library(chron)
                               
 
 ### Characterize spectral shape of aph(l)
-    library(abind)
         # Chla-specific ap
         specific <- function(x){
             media <- x[21]
@@ -76,7 +76,6 @@ library(chron)
 ### FIGURE 3 ###        
 ################
         
-    path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="") 
     png(file=paste(path_figures,"Figure3_PPC_aph_2groups.png",sep=""),width = 1210, height = 730, units = "px", pointsize = 22, bg = "white")
 
 ################            
@@ -155,24 +154,21 @@ library(chron)
           mtext(3,at=0,adj=0,line=0.4,text="b) fDiatoms>0.5", cex=lettersizeS, font=1)
           mtext(1,at=0.2,line=2.4, text="PPC:TChla", cex=0.8, font=1)
 #################        
-     save(regre1,regre2,file=paste(OS,"Datos/Res_C20_radtrans/phyto_optics/regre1.RData",sep=""))
+    save(regre1,regre2,file=paste(s_dir,"regre1.RData",sep=""))
         
         
     
 #### Re-construct aph(l)
-    dir <-paste(OS,"Datos/Res_C20_radtrans/phyto_optics/",sep="")   
-    pdir<-paste(OS,"Datos/Res_C20_radtrans/",sep="")
     paleta<-wes_palette(6, name = "Zissou1", type = "continuous")
     colores<-c(paleta[3],paleta[5])    
     colores<-c("grey60","black")  
     
     i=12  #  optics_phyto_recom_carbon_12.dat", initial constant
         
-        
 ### C Small Phyto
 #################        
         alpha <- 0.14/86400
-        filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+        filename<-paste(s_dir,"sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
         datos <- read.table(filename, skip=7, nrows=13)
         lambda <- datos[,1]
           # APH
@@ -189,7 +185,7 @@ library(chron)
                col=colores[1], ylab="", xlab="", mgp=c(3,1,0), yaxs="i") 
                #media2 <- sum(25*datos[,34])/(700-400)
       
-          load(paste(dir,"regre1.RData",sep=""))
+          load(paste(s_dir,"regre1.RData",sep=""))
           new_PPCs <- c(0.2,0.4,0.6,0.8,1.0)
           for (k in c(1:5)){
                     new_PPC <- new_PPCs[k]
@@ -217,7 +213,7 @@ library(chron)
 ### D Diatoms
 ##################      
         alpha <- 0.19/86400
-        filename<-paste(pdir,"phyto_optics/sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
+        filename<-paste(s_dir,"sensitivity/optics_phyto_recom_carbon_",i,".dat",sep="")
         datos <- read.table(filename, skip=21)
         lambda <- datos[,1]
         # APH        
@@ -234,7 +230,7 @@ library(chron)
                     col=colores[1], ylab="", xlab="", mgp=c(3,1,0), yaxs="i")
                #media1 <- sum(25*datos[,30])/(700-400)           
           
-          load(paste(dir,"regre1.RData",sep=""))     
+          load(paste(s_dir,"regre1.RData",sep=""))     
           new_PPCs <- c(0.2,0.4,0.6,0.8,1.0)
           for (k in c(1,3,5)){
           new_PPC <- new_PPCs[k]

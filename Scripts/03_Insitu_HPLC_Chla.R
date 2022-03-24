@@ -1,4 +1,5 @@
 source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ################################
 ###  Chla and PPC concentrations
@@ -12,7 +13,6 @@ p_dir<-paste(global_path,"Dat_observations/HPLC/",sep="")
 # other for Bracher : "TOTAL_Astrid6_hplc.csv"
 # other for Chase: "TOTAL_Chase_hplc.csv"
 # combine them in ALL 
-
 
         # define grid in depth : use the model
         experimentos<-read.csv(paste(global_path,"/Res_model/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
@@ -38,29 +38,29 @@ p_dir<-paste(global_path,"Dat_observations/HPLC/",sep="")
 
 # Tabla datos Astrid
 astrid<-read.csv(paste(p_dir,"TOTAL_Astrid6_hplc.csv", sep=""))    
-names(astrid)
+#names(astrid)
 nombres_astrid<-names(astrid)[c(3,9,16,11:13,18,19,24,28,31,37,51,54:56,53,58)]
 astrid2<-astrid[,c(3,9,16,11:13,18,19,24,28,31,37,51,54:56,53,58)] 
-dim(astrid2)
+#dim(astrid2)
 
 # Tabla datos CSIRO
 csiro<-read.csv(paste(p_dir,"TOTAL_CSIRO_hplc.csv", sep=""))    
-names(csiro)   
+#names(csiro)   
 nombres_csiro<-names(csiro)[c(3,9:13,15,16,21,25,28,34,48,51:53,50,55)]    
 csiro2<-csiro[,c(3,9:13,15,16,21,25,28,34,48,51:53,50,55)]  
-dim(csiro2)
+#dim(csiro2)
 
 # Tabla datos Chase
 chase<-read.csv(paste(p_dir,"TOTAL_Chase_hplc.csv", sep=""))
-names(chase)       
+#names(chase)       
 nombres_chase<-c(names(chase)[c(1,14,4:7,12,13,16:18,44,43,46:48)],NA,NA)  
 chase2<-cbind(chase[,c(1,14,4:7,12,13,16:18,44,43,46:48)],matrix(NA,ncol=2,nrow=nrow(chase)))
 colnames(chase2)<-nombres_astrid
-dim(chase2)
+#dim(chase2)
 
 #cbind(nombres_astrid,nombres_csiro,nombres_chase)
 experimentos<-rbind(astrid2, csiro2)    
-colnames(experimentos)    
+#colnames(experimentos)    
     
     ## The three tables together    
     cruise <- experimentos$DATABASE
@@ -152,7 +152,7 @@ colnames(experimentos)
       # image(x=longi,y=latit,res2, breaks=c(0,0,10000),col=c("transparent","red3"),ylab="", xlab="", las=1, main=NAME)
       # dev.off()         
       
-    } # end loop w
+    } # end loop w (pigment)
 ###########
 
 
@@ -177,7 +177,6 @@ experimentos<-read.csv(paste(p_dir,"pigments_MAREDAT_and_Claustre_quality_contro
         DAY <- experimentos$Day        
         datetime <- as.Date(paste(DAY,times,YEAR, sep="/"), format="%d/%m/%Y")         
         JULIAN <- julian(datetime, origin = as.Date("1988-01-01")) # range(JULIAN, na.rm=TRUE)  
-        
         #range(datetime[!is.na(experimentos$MTChla)],na.rm=T)
         
       ## Name aggregated pigments
@@ -256,7 +255,7 @@ experimentos<-read.csv(paste(p_dir,"pigments_MAREDAT_and_Claustre_quality_contro
                       # image(x=longi,y=latit,res2, breaks=c(0,0,10000),col=c("transparent","red3"), ylab="", xlab="", las=1, main=NAME)
                       # dev.off()         
   
-      } # end loop w
+      } # end loop w (pigment)
 ###########
 
 
@@ -275,14 +274,14 @@ namePigments <- c("MTChla","MTChlb","MTChlc","MPSC","MPPC")
 for (k in 1:length(namePigments)){
   NAME <-namePigments[k] 
   load(paste(p_dir,"MAREDAT/media_seasonal_", NAME,".RData", sep=""))
-  dim(res)
+  #dim(res)
   maredat <- res
   load(paste(p_dir,"Bracher_CSIRO_Chase/media_seasonal_", NAME,".Rdata", sep=""))
-  dim(res)  
+  #dim(res)  
   astrid <- res
   
   res2 <- abind(maredat,astrid, along=0.5)
-  dim(res2)
+  #dim(res2)
   dimnames(res2) <- list(h=c(1:2),x=longitude, y=latitude, z=prof_field, t=month)
   res <- apply(res2, MARGIN=c("x","y","z","t"), FUN=mean, na.rm=TRUE)
   
@@ -341,7 +340,7 @@ for (k in 1:length(namePigments)){
           pigmentos[clorofila==0] <- NA 
           clorofila[clorofila==0] <- NA 
           PPCinsitu_MAREDAT <- pigmentos/clorofila
-          dim(PPCinsitu_MAREDAT)
+          #dim(PPCinsitu_MAREDAT)
 
 for (k in 1:length(namePigments)){
   fileguardar1 <- paste(p_dir, "MAREDAT/media_seasonal_",namePigments[k],".RData", sep="")        
@@ -354,8 +353,7 @@ for (k in 1:length(namePigments)){
           pigmentos[clorofila==0] <- NA 
           clorofila[clorofila==0] <- NA 
           PPCinsitu_MAREDAT_s <- pigmentos/clorofila
-          dim(PPCinsitu_MAREDAT_s)                    
-
+          #dim(PPCinsitu_MAREDAT_s)                    
 
 ### In situ NEW            
 for (k in 1:length(namePigments)){
@@ -369,8 +367,7 @@ for (k in 1:length(namePigments)){
           pigmentos[clorofila==0] <- NA 
           clorofila[clorofila==0] <- NA 
           PPCinsitu_NEW <- pigmentos/clorofila
-          dim(PPCinsitu_NEW)
-          
+          #dim(PPCinsitu_NEW)
 
 for (k in 1:length(namePigments)){
   fileguardar1 <- paste(p_dir,"Bracher_CSIRO_Chase/media_seasonal_", namePigments[k],".RData", sep="")        
@@ -383,9 +380,8 @@ for (k in 1:length(namePigments)){
           pigmentos[clorofila==0] <- NA 
           clorofila[clorofila==0] <- NA 
           PPCinsitu_NEW_s <- pigmentos/clorofila
-          dim(PPCinsitu_NEW_s)    
+          #dim(PPCinsitu_NEW_s)    
           
-
 
 ### In situ ALL           
 for (k in 1:length(namePigments)){
@@ -399,7 +395,7 @@ for (k in 1:length(namePigments)){
           pigmentos[clorofila==0] <- NA 
           clorofila[clorofila==0] <- NA 
           PPCinsitu_ALL <- pigmentos/clorofila
-          dim(PPCinsitu_ALL)
+          #dim(PPCinsitu_ALL)
           
 
 for (k in 1:length(namePigments)){
@@ -413,9 +409,7 @@ for (k in 1:length(namePigments)){
           pigmentos[clorofila==0] <- NA 
           clorofila[clorofila==0] <- NA 
           PPCinsitu_ALL_s <- pigmentos/clorofila
-          dim(PPCinsitu_ALL_s)               
-    
-
+          #dim(PPCinsitu_ALL_s)               
 
 save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
      PPCinsitu_NEW,        PPCinsitu_NEW_s,
@@ -448,7 +442,7 @@ save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
             clorofila <- MTChla
             clorofila[clorofila==0] <- NA 
             TChla_MAREDAT <- clorofila
-            dim(TChla_MAREDAT)
+            #dim(TChla_MAREDAT)
             
     # Seasonal
     for (k in 1:length(namePigments)){
@@ -459,7 +453,7 @@ save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
             clorofila <- MTChla
             clorofila[clorofila==0] <- NA 
             TChla_MAREDAT_s <- clorofila
-            dim(TChla_MAREDAT_s)                    
+            #dim(TChla_MAREDAT_s)                    
     
     
 ##### In situ NEW
@@ -472,7 +466,7 @@ save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
             clorofila <- MTChla
             clorofila[clorofila==0] <- NA 
             TChla_NEW <- clorofila
-            dim(TChla_NEW)
+            #dim(TChla_NEW)
 
     # Seasonal
     for (k in 1:length(namePigments)){
@@ -483,7 +477,7 @@ save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
             clorofila <- MTChla
             clorofila[clorofila==0] <- NA 
             TChla_NEW_s <- clorofila
-            dim(TChla_NEW_s)    
+            #dim(TChla_NEW_s)    
         
  
 ##### In situ ALL
@@ -496,7 +490,7 @@ save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
             clorofila <- MTChla
             clorofila[clorofila==0] <- NA 
             TChla_ALL <- clorofila
-            dim(TChla_ALL)
+            #dim(TChla_ALL)
                      
     # Seasonal
     for (k in 1:length(namePigments)){
@@ -507,7 +501,7 @@ save(PPCinsitu_MAREDAT,    PPCinsitu_MAREDAT_s,
             clorofila <- MTChla
             clorofila[clorofila==0] <- NA 
             TChla_ALL_s <- clorofila
-            dim(TChla_ALL_s)               
+            #dim(TChla_ALL_s)               
 
     save(TChla_MAREDAT,    TChla_MAREDAT_s,
          TChla_NEW,        TChla_NEW_s,

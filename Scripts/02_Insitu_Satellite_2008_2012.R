@@ -1,10 +1,10 @@
 source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ##########################################
 ## SATELLITE ##  SEASONAL AND ANNUAL MEANS
 ##########################################
-
-
+# https://www.oceancolour.org/
 
 ########################
 ####  SURFACE CHLA  #### 
@@ -74,7 +74,6 @@ dir1 = "chla_MO_OCCCI/"
 ## CLIMATOLOGY LINEAL
 ####################   
    ## SEASONAL    
-      o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
       anito<-seq(2012,2018)
       load(paste(o_dir,"res_seasonal_OCCCI_chla/media_anual_chl_OCCCI_",anito[1],".RData",sep="") )
       m1<-res
@@ -87,30 +86,30 @@ dir1 = "chla_MO_OCCCI/"
       load(paste(o_dir,"res_seasonal_OCCCI_chla/media_anual_chl_OCCCI_",anito[5],".RData",sep="") )
       m5<-res 
       load(paste(o_dir,"res_seasonal_OCCCI_chla/media_anual_chl_OCCCI_",anito[6],".RData",sep="") )
-      m6<-res       
+      m6<-res 
+      load(paste(o_dir,"res_seasonal_OCCCI_chla/media_anual_chl_OCCCI_",anito[7],".RData",sep="") )
+      m7<-res 
               JD <- as.numeric(unlist(dimnames(m1)[3]))    
-              M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), z=JD,
-                                                                           w=anito))
-              dim(M)
+              M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), z=JD, w=anito))
+              #dim(M)
               M[,,,1] <- m1
               M[,,,2] <- m2
               M[,,,3] <- m3
               M[,,,4] <- m4
               M[,,,5] <- m5
               M[,,,6] <- m6
-        dim(M)
+              M[,,,7] <- m7
+        #dim(M)
         med <- apply(M , 1:3 , mean, na.rm=TRUE)
         rm(M)
-        dim(med)
+        #dim(med)
         dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
                               y=as.numeric(unlist(dimnames(m1)[2])), z=JD)
         med[is.nan(med)] <- NA
         save(med, file =paste(o_dir,"climatologies_2012_2018/media_seasonal_chl_2deg_OCCCI_2012_2018.RData",sep="") )
       
-   ## ANNUAL ##  
-        source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-        o_dir <- "/Users/ealvarez/Datos/Dat_Satelite/"
-                   load(paste(o_dir,"climatologies_2012_2018/media_seasonal_chl_2deg_OCCCI_2012_2018.RData",sep="") )
+   ## ANNUAL ##
+        #load(paste(o_dir,"climatologies_2012_2018/media_seasonal_chl_2deg_OCCCI_2012_2018.RData",sep="") )
         JD <- as.numeric(unlist(dimnames(med)[3])) 
         res <- apply(med, MARGIN=c("x","y"), FUN=mean, na.rm=TRUE)
         #res <- flipud(res)
@@ -120,7 +119,6 @@ dir1 = "chla_MO_OCCCI/"
 ## CLIMATOLOGY LOG
 ##################     
    ## SEASONAL    
-   o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
    anito<-c(2012:2018)
         load(paste(o_dir,"res_seasonal_OCCCI_chla/media_log_chl_OCCCI_",anito[1],".RData",sep="") )
         m1<-res
@@ -132,6 +130,10 @@ dir1 = "chla_MO_OCCCI/"
         m4<-res
         load(paste(o_dir,"res_seasonal_OCCCI_chla/media_log_chl_OCCCI_",anito[5],".RData",sep="") )
         m5<-res 
+        load(paste(o_dir,"res_seasonal_OCCCI_chla/media_log_chl_OCCCI_",anito[6],".RData",sep="") )
+        m6<-res
+        load(paste(o_dir,"res_seasonal_OCCCI_chla/media_log_chl_OCCCI_",anito[7],".RData",sep="") )
+        m7<-res         
         JD <- as.numeric(unlist(dimnames(m1)[3]))    
         M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), z=JD, w=anito))
         M[,,,1] <- m1
@@ -139,23 +141,21 @@ dir1 = "chla_MO_OCCCI/"
         M[,,,3] <- m3
         M[,,,4] <- m4
         M[,,,5] <- m5
-        dim(M)
+        M[,,,6] <- m6
+        M[,,,7] <- m7
+        #dim(M)
         med <- apply(M , 1:3 , mean, na.rm=TRUE)
         rm(M)
-        dim(med)
-        dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
-                              y=as.numeric(unlist(dimnames(m1)[2])), z=JD)
+        #dim(med)
+        dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),y=as.numeric(unlist(dimnames(m1)[2])), z=JD)
         med[is.nan(med)] <- NA
     save(med, file =paste(o_dir,"climatologies_2012_2018/media_seasonal_log_chl_OCCCI_2012_2018.RData",sep="") )
         
     ## ANNUAL ##  
-    #source("/Users/ealvarez/Programas/Funciones_varios/functions.r")
-    #o_dir <- "/Users/ealvarez/Datos/Dat_Satelite/"
-    #load(paste(o_dir,"climatologies_2012_2018/media_seasonal_log_chl_OCCCI_2012_2018.RData",sep="") )
-        JD <- as.numeric(unlist(dimnames(med)[3])) 
-        res <- apply(med, MARGIN=c("x","y"), FUN=mean, na.rm=TRUE)
-        #res <- flipud(res)
-        save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_log_chl_OCCCI_2012_2018.RData",sep="") )
+    JD <- as.numeric(unlist(dimnames(med)[3])) 
+    res <- apply(med, MARGIN=c("x","y"), FUN=mean, na.rm=TRUE)
+    #res <- flipud(res)
+    save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_log_chl_OCCCI_2012_2018.RData",sep="") )
 ##################        
 
 
@@ -180,12 +180,7 @@ dir1 = "reflectance_MO_OCCCI/"
                       "orange", "tomato","orangered2","red3")
     landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
     
-    
-    k=2
-    
-    
-    
-    for (k in c(1:2)){   # ano
+    for (k in c(1:length(anito))){   # ano
     ano <- anito[k]
     
     for (w in 1:length(landas_sat)){   
@@ -216,7 +211,7 @@ dir1 = "reflectance_MO_OCCCI/"
             rm(tmp)
             close.nc(filenc) 
             
-            # Reducir resolucion del satelite para casar con recom
+            # Low res
             z <- flipud(z)
             #dim(z)
             red=48     # 48    #8460/180  #4320/90      #8460/360  #4320/180
@@ -254,9 +249,9 @@ dir1 = "reflectance_MO_OCCCI/"
 
 
 
-## Unir landas en un solo archivo 
-#################################    
-ano=2013
+## Join landas_sat in a single file
+###################################    
+ano=2012
 landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
 year<-rep(ano, 12)
 month<-c(1:12)
@@ -270,7 +265,7 @@ for (w in 1:length(landas_sat)){
                           dimnames=list(x=LON, y=LAT, z=seq(1,12,by=1),l=landas_sat))
     md[,,,w]<-res } else { md[,,,w]<-res }       } # end loop w             
 
-dim(md)
+#dim(md)
 res <- md
 save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",ano,".RData",sep="") )
 #################################
@@ -280,65 +275,50 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
 ## CLIMATOLOGY
 ##############    
     ## SEASONAL    
-    o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
     anito<-c(2012:2018)
     landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
     load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[1],".RData",sep="") )
     m1<-res
-    dim(m1)
     load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[2],".RData",sep="") )
     m2<-res
-    dim(m2)
     load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[3],".RData",sep="") )
     m3<-res
-    dim(m3)
     load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[4],".RData",sep="") )
     m4<-res
-    dim(m4)
     load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[5],".RData",sep="") )
     m5<-res
-    dim(m5)
     load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[6],".RData",sep="") )
     m6<-res
-    dim(m6)    
-    
+    load(paste(o_dir, "res_seasonal_OCCCI_reflectance/media_anual_Rrs_2deg_OCCCI_",anito[7],".RData",sep="") )
+    m7<-res
             JD <- as.numeric(unlist(dimnames(m1)[3]))    
-            M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD,
-                                                                         l=landas_sat, w=anito))
+            M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD, l=landas_sat, w=anito))
             M[,,,,1] <- m1
             M[,,,,2] <- m2
             M[,,,,3] <- m3
             M[,,,,4] <- m4
             M[,,,,5] <- m5
             M[,,,,6] <- m6  
-            
-            dim(M)
+            M[,,,,7] <- m7
+            #dim(M)
             med <- apply(M , 1:4 , mean, na.rm=TRUE)
             rm(M)
-            dim(med)
+            #dim(med)
             dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
                                   y=as.numeric(unlist(dimnames(m1)[2])),
                                   t=JD, l=landas_sat)
             med[is.nan(med)] <- NA
     save(med, file =paste(o_dir,"climatologies_2012_2018/media_seasonal_Rrs_2deg_OCCCI_2012_2018.RData",sep="") )
     
-
     ## ANNUAL ##  
-    #source("/Users/ealvarez/Programas/Funciones_varios/functions.r")
-    #o_dir <- "/Users/ealvarez/Datos/Dat_Satelite/"
-    #load(paste(o_dir,"climatologies_2008_2012/media_seasonal_Rrs_2deg_OCCCI_2008_2012.RData",sep="") )
-    #dim(med)
-            JD <- as.numeric(unlist(dimnames(med))) 
-            res <- apply(med, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
-            dim(res)
-        save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_Rrs_2deg_OCCCI_2012_2018.RData",sep="") )
+    JD <- as.numeric(unlist(dimnames(med))) 
+    res <- apply(med, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
+    #dim(res)
+    save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_Rrs_2deg_OCCCI_2012_2018.RData",sep="") )
 ##############
     
 
-
-            
-            
-            
+           
                         
             
 ###########################
@@ -358,7 +338,7 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
        year1<-as.numeric(substring(archivo,nchar(archivo)-14,nchar(archivo)-11))  
        anito<-unique(year1)
        
-       k=2
+       k=1  # Files too heavy, one year done at a time
        ano <- anito[k]       
        
        filename <- paste(o_dir,dir1,archivo[year1==ano], sep="")
@@ -366,8 +346,6 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
        month<-as.numeric(substring(filename,nchar(filename)-10,nchar(filename)-9))
        day<-rep(15, length(filename))
        JD <- julian(as.Date(paste(year,month,day, sep="-")), origin = as.Date(paste(ano,"-01-01", sep=""))) #"%Y-%m-%d"
-        
-
 
   for (h in c(1:12)){           
         filenc <- open.nc(filename[h])
@@ -383,7 +361,7 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
                 rownames(z)=lon
                 z[which(is.nan(z))] <- NA 
                 z[which(is.na(z))] <- NA
-                # Reducir resolucion del satelite para casar con recom
+                # Low res
                 z <- flipud(z)
           #dim(z)
           #range(z, na.rm=TRUE)
@@ -409,7 +387,6 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
                 z<-ZETA 
                 save(z,LAT,LON, file=paste(o_dir,"res_seasonal_OCCCI_IOPs/", h,"_",aph_sat[w],"_2deg_OCCCI_",ano,".RData",sep="") )
             } # end loop w (landa)
-        
         
             for (w in 1:length(adg_sat)){             
             z <- tmp[[which(names(tmp)==adg_sat[w])]]
@@ -438,7 +415,7 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
                         LON[i]<-mean(lon[c((((i-1)*red)+1):(i*red))], na.rm=TRUE)}   # end loop i
                     z<-ZETA 
                save(z,LAT,LON, file=paste(o_dir,"res_seasonal_OCCCI_IOPs/",h,"_",adg_sat[w],"_2deg_OCCCI_",ano,".RData",sep="") )
-            } # end loop w 
+            } # end loop w (lambda) 
             
             for (w in 1:length(atot_sat)){             
                 z <- tmp[[which(names(tmp)==atot_sat[w])]]
@@ -467,7 +444,7 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
                     LON[i]<-mean(lon[c((((i-1)*red)+1):(i*red))], na.rm=TRUE)}   # end loop i
                 z<-ZETA 
                 save(z,LAT,LON, file=paste(o_dir,"res_seasonal_OCCCI_IOPs/",h,"_",atot_sat[w],"_2deg_OCCCI_",ano,".RData",sep="") )
-            } # end loop w 
+            } # end loop w (lambda) 
             
             for (w in 1:length(bbp_sat)){             
                 z <- tmp[[which(names(tmp)==bbp_sat[w])]]
@@ -506,16 +483,14 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
        
        
        
-       
+## Join landas_sat in a single file  
+####################################       
      aph_sat <- c("aph_412", "aph_443", "aph_490", "aph_510", "aph_555", "aph_670")
      adg_sat <- c("adg_412", "adg_443", "adg_490", "adg_510", "adg_555", "adg_670")
      atot_sat<- c("atot_412","atot_443","atot_490","atot_510","atot_555","atot_670")
      bbp_sat <- c("bbp_412", "bbp_443", "bbp_490", "bbp_510", "bbp_555", "bbp_670")            
      
-     ano <- 2013 # 2015
-     o_dir <- "E:/Datos/Dat_Satelite/"
-     #w=6
-     
+     ano <- 2012 # 2018
             for (w in 1:length(atot_sat)){  #1
                 year<-rep(ano, 12)
                 month<-c(1:12)
@@ -543,12 +518,10 @@ save(res,LAT,LON,JD,landas_sat, file=paste(o_dir,"res_seasonal_OCCCI_reflectance
                 md[,,,w]<-res } else { md[,,,w]<-res }  
                 } # end loop w             
         
-#dim(md)
-res <- md
-save(res,LAT,LON,JD, atot_sat, file=paste(o_dir, #5
-"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_", #6
-ano,".RData",sep="") )
-
+    #dim(md)
+    res <- md
+    save(res,LAT,LON,JD, atot_sat, file=paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_", ano,".RData",sep="") )
+####################################    
            
 
 
@@ -556,30 +529,24 @@ ano,".RData",sep="") )
 
 ## CLIMATOLOGY Aph
 ###################    
-    ## SEASONAL    
-    o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
+    ## SEASONAL
     anito<-c(2012:2018)
     landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
     
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[1],".RData",sep="") )
     m1<-res
-    dim(m1)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[2],".RData",sep="") )
     m2<-res
-    dim(m2)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[3],".RData",sep="") )
     m3<-res
-    dim(m3)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[4],".RData",sep="") )
     m4<-res
-    dim(m4)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[5],".RData",sep="") )
     m5<-res
-    dim(m5)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[6],".RData",sep="") )
     m6<-res
-    dim(m6)
-    
+    load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Aph_2deg_OCCCI_",anito[7],".RData",sep="") )
+    m7<-res    
     JD <- as.numeric(unlist(dimnames(m1)[3]))    
     M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD,
                                                                  l=landas_sat, w=anito))
@@ -589,27 +556,21 @@ ano,".RData",sep="") )
     M[,,,,4] <- m4
     M[,,,,5] <- m5
     M[,,,,6] <- m6   
-    
-    dim(M)
+    M[,,,,7] <- m7   
+    #dim(M)
     med <- apply(M , 1:4 , mean, na.rm=TRUE)
     rm(M)
-    dim(med)
+    #dim(med)
     dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
                           y=as.numeric(unlist(dimnames(m1)[2])),
                           t=JD, l=landas_sat)
     med[is.nan(med)] <- NA
     save(med, file =paste(o_dir,"climatologies_2012_2018/media_seasonal_Aph_2deg_OCCCI_2012_2018.RData",sep="") )
     
-
-
     ## ANNUAL ##  
-    #source("/Users/ealvarez/Programas/Funciones_varios/functions.r")
-    #o_dir <- "/Users/ealvarez/Datos/Dat_Satelite/"
-    #load(paste(o_dir,"climatologies_2012_2018/media_seasonal_Aph_2deg_OCCCI_2012_2018.RData",sep="") )
-    #dim(med)
     JD <- as.numeric(unlist(dimnames(med))) 
     res <- apply(med, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
-    dim(res)
+    #dim(res)
     save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_Aph_2deg_OCCCI_2012_2018.RData",sep="") )
     
 ###################
@@ -620,28 +581,23 @@ ano,".RData",sep="") )
 ## CLIMATOLOGY Adg
 ###################    
     ## SEASONAL    
-    o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
-    anito<-c(2012:2017)
+    anito<-c(2012:2018)
     landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
     
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[1],".RData",sep="") )
     m1<-res
-    dim(m1)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[2],".RData",sep="") )
     m2<-res
-    dim(m2)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[3],".RData",sep="") )
     m3<-res
-    dim(m3)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[4],".RData",sep="") )
     m4<-res
-    dim(m4)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[5],".RData",sep="") )
     m5<-res
-    dim(m5)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[6],".RData",sep="") )
     m6<-res
-    dim(m6)
+    load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Adg_2deg_OCCCI_",anito[7],".RData",sep="") )
+    m7<-res
     
     JD <- as.numeric(unlist(dimnames(m1)[3]))    
     M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD,
@@ -652,8 +608,9 @@ ano,".RData",sep="") )
     M[,,,,4] <- m4
     M[,,,,5] <- m5
     M[,,,,6] <- m6   
+    M[,,,,7] <- m7
     
-    dim(M)
+    #dim(M)
     med <- apply(M , 1:4 , mean, na.rm=TRUE)
     rm(M)
     dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
@@ -665,7 +622,7 @@ ano,".RData",sep="") )
     ## ANNUAL ##  
     JD <- as.numeric(unlist(dimnames(med))) 
     res <- apply(med, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
-    dim(res)
+    #dim(res)
     save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_Adg_2deg_OCCCI_2012_2018.RData",sep="") )
     
 ###################    
@@ -676,40 +633,34 @@ ano,".RData",sep="") )
 ## CLIMATOLOGY Atot
 ###################    
     ## SEASONAL    
-    o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
-    anito<-c(2012:2017)
+    anito<-c(2012:2018)
     landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
     
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[1],".RData",sep="") )
     m1<-res
-    dim(m1)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[2],".RData",sep="") )
     m2<-res
-    dim(m2)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[3],".RData",sep="") )
     m3<-res
-    dim(m3)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[4],".RData",sep="") )
     m4<-res
-    dim(m4)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[5],".RData",sep="") )
     m5<-res
-    dim(m5)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[6],".RData",sep="") )
     m6<-res
-    dim(m6)
+    load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Atot_2deg_OCCCI_",anito[7],".RData",sep="") )
+    m7<-res
     
     JD <- as.numeric(unlist(dimnames(m1)[3]))    
-    M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD,
-                                                                 l=landas_sat, w=anito))
+    M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD, l=landas_sat, w=anito))
     M[,,,,1] <- m1
     M[,,,,2] <- m2
     M[,,,,3] <- m3
     M[,,,,4] <- m4
     M[,,,,5] <- m5
     M[,,,,6] <- m6   
-    
-    dim(M)
+    M[,,,,7] <- m7
+    #dim(M)
     med <- apply(M , 1:4 , mean, na.rm=TRUE)
     rm(M)
     dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
@@ -721,7 +672,7 @@ ano,".RData",sep="") )
     ## ANNUAL ##  
     JD <- as.numeric(unlist(dimnames(med))) 
     res <- apply(med, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
-    dim(res)
+    #dim(res)
     save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_Atot_2deg_OCCCI_2012_2018.RData",sep="") )
     
 ###################     
@@ -732,40 +683,34 @@ ano,".RData",sep="") )
 ## CLIMATOLOGY Bbp
 ###################    
     ## SEASONAL    
-    o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
-    anito<-c(2012:2017)
+    anito<-c(2012:2018)
     landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
     
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[1],".RData",sep="") )
     m1<-res
-    dim(m1)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[2],".RData",sep="") )
     m2<-res
-    dim(m2)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[3],".RData",sep="") )
     m3<-res
-    dim(m3)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[4],".RData",sep="") )
     m4<-res
-    dim(m4)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[5],".RData",sep="") )
     m5<-res
-    dim(m5)
     load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[6],".RData",sep="") )
     m6<-res
-    dim(m6)
+    load(paste(o_dir,"res_seasonal_OCCCI_IOPs/media_anual_Bbp_2deg_OCCCI_",anito[7],".RData",sep="") )
+    m7<-res
     
     JD <- as.numeric(unlist(dimnames(m1)[3]))    
-    M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD,
-                                                                 l=landas_sat, w=anito))
+    M <- array(NA, dim = c(dim(m1),length(anito)), dimnames=list(x=unlist(dimnames(m1)[1]), y=unlist(dimnames(m1)[2]), t=JD, l=landas_sat, w=anito))
     M[,,,,1] <- m1
     M[,,,,2] <- m2
     M[,,,,3] <- m3
     M[,,,,4] <- m4
     M[,,,,5] <- m5
     M[,,,,6] <- m6   
-    
-    dim(M)
+    M[,,,,7] <- m7   
+    #dim(M)
     med <- apply(M , 1:4 , mean, na.rm=TRUE)
     rm(M)
     dimnames(med) <- list(x=as.numeric(unlist(dimnames(m1)[1])),
@@ -777,7 +722,7 @@ ano,".RData",sep="") )
     ## ANNUAL ##  
     JD <- as.numeric(unlist(dimnames(med))) 
     res <- apply(med, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
-    dim(res)
+    #dim(res)
     save(res, file =paste(o_dir,"climatologies_2012_2018/media_anual_Bbp_2deg_OCCCI_2012_2018.RData",sep="") )
     
 ###################     

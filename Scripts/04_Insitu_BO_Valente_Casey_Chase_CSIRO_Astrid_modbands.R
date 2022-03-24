@@ -1,4 +1,5 @@
 source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ########################################
 ##  In situ bio-optical data  GLOBAL  ##
@@ -8,7 +9,7 @@ source("00_Summary_EDITME.R")
 # Input: original .csv tables of rrs and iop samples (in /csvs/)
 # Output:  .Rdata matrices with rrs and iop data averaged in the wavebands (25nm) of the model and collocated (in /total_tables/)
 # one for Valente: "Valente2_ChlaRssIOP_modbands12.RData"
-# one for CSIRO: "CSIRO_Iop_modbands12"    # Note: CSIRO IOPs and HPLC data are not collocated, there's no ID in the samples to match 
+# one for CSIRO: "CSIRO_Iop_modbands12"    # Note: CSIRO IOPs and HPLC data are not collocated, there's no ID in the samples to match them
 # other for Bracher : "Astrid6_IopHplc2nm_modbands12.RData"
 # other for Chase: "Chase_RssHplc_modbands12.RData"
 # other for Casey: "Casey_RssIop_modbands12.RDat"
@@ -16,11 +17,10 @@ source("00_Summary_EDITME.R")
 
 modelo_lambda <- c(400.0, 425.0, 450.0, 475.0, 500.0, 525.0, 550.0, 575.0,600.0, 625.0, 650.0, 675.0, 700.0)
 lambda_extremos<-sort(unique(c(modelo_lambda[-length(modelo_lambda)]+(diff(modelo_lambda)/2),400,700)))
-s_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/total_tables/",sep="")
-
+#cbind(lambda_extremos[-length(lambda_extremos)],modelo_lambda,lambda_extremos[-1])
 s_dir<-paste(global_path,"Dat_observations/optics/total_tables/",sep="")
 
-#cbind(lambda_extremos[-length(lambda_extremos)],modelo_lambda,lambda_extremos[-1])
+
 
 
 ########################
@@ -28,13 +28,13 @@ s_dir<-paste(global_path,"Dat_observations/optics/total_tables/",sep="")
 ########################     
 p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep="")
 
-  ## RSS
+  ## RRS
   reflectancia<-read.csv(paste(p_dir,"insitudb_rrs.csv", sep=""))
   lon<-reflectancia$Longitude
   lat<-reflectancia$Latitude
   #unique(reflectancia$Comment..dataset.)
   #sort(unique(reflectancia$Comment..subdataset.))
-  names(reflectancia)
+  #names(reflectancia)
   nombres_lambda <- names(reflectancia)[c(10:620)]
   numeros_lambda <- as.numeric(substring(nombres_lambda,16,nchar(nombres_lambda)-4))          
       reflectancia[c(10:620)][reflectancia[c(10:620)]<=0]<-NA
@@ -74,7 +74,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
 
   ## APH
   reflectancia<-read.csv(paste(p_dir,"insitudb_aph_withoutAWI&NOMAD.csv", sep=""))
-  colnames(reflectancia)
+  #colnames(reflectancia)
   lon<-reflectancia$Longitude
   lat<-reflectancia$Latitude
   #unique(reflectancia$Comment..dataset.)
@@ -105,7 +105,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
           # matplot(numeros_lambda, t(reflectancia[,c(5:554)]), type="b", pch=19,col=rainbow(10), xlim=c(300,800), ylim=c(0,0.1), las=1) 
           # matplot(modelo_lambda, t(nueva_reflec), type="b", pch=19,col=rainbow(10), xlim=c(300,800), ylim=c(0,0.3), las=1)
         colnames(nueva_reflec) <- paste("aph_",modelo_lambda, sep="")
-        colnames(reflectancia)[c(1:10,561:564)]
+        #colnames(reflectancia)[c(1:10,561:564)]
         tabla_aph <- cbind(reflectancia[,c(1:10,561:564)],nueva_reflec) 
         # colnames(tabla_aph)
 
@@ -116,7 +116,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
   lat<-reflectancia$Latitude
   #unique(reflectancia$Comment..dataset.)
   #sort(unique(reflectancia$Comment..subdataset.)) 
-  names(reflectancia)
+  #names(reflectancia)
   nombres_lambda <- names(reflectancia)[c(10:42)]
   numeros_lambda <- as.numeric(substring(nombres_lambda,nchar(nombres_lambda)-29,nchar(nombres_lambda)-27))          
      reflectancia[c(10:42)][reflectancia[c(10:42)]<=0.0001]<-NA
@@ -156,7 +156,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
   lat<-reflectancia$Latitude
   #unique(reflectancia$Comment..dataset.)
   #sort(unique(reflectancia$Comment..subdataset.))
-  names(reflectancia)
+  #names(reflectancia)
   nombres_lambda <- names(reflectancia)[c(10:41)]
   numeros_lambda <- as.numeric(substring(nombres_lambda,nchar(nombres_lambda)-6,nchar(nombres_lambda)-4))          
      reflectancia[c(10:41)][reflectancia[c(10:41)]<=0.0001]<-NA
@@ -191,7 +191,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
 
   ## Chla 
   clorofila<-read.csv(paste(p_dir,"insitudb_chla.csv", sep=""))
-  names(clorofila)
+  #names(clorofila)
   #dim(clorofila)
   clorofila[c(10)][clorofila[c(10)]<=0.001]<-NA
   clorofila[c(10)][clorofila[c(10)]>100]<-NA  
@@ -207,30 +207,13 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
 
   lista <- sort(unique(c(clorofila$ID,tabla_rss$ID,tabla_aph$ID,tabla_adg$ID,tabla_bbp$ID)))
   #length(lista)
-  
-  sum(!is.na(match(lista,clorofila$ID)))
-  dim(clorofila) 
-  sum(!is.na(match(lista,tabla_rss$ID)))
-  dim(tabla_rss)
-  sum(!is.na(match(lista,tabla_aph$ID)))
-  dim(tabla_aph)    
-  sum(!is.na(match(lista,tabla_adg$ID)))
-  dim(tabla_adg)   
-  sum(!is.na(match(lista,tabla_bbp$ID)))
-  dim(tabla_bbp) 
-  
+
   cloro_ordered <- clorofila[match(lista,clorofila$ID),] 
   tabla_rss_ordered <- tabla_rss[match(lista,tabla_rss$ID),]
   tabla_aph_ordered <- tabla_aph[match(lista,tabla_aph$ID),] 
   tabla_adg_ordered <- tabla_adg[match(lista,tabla_adg$ID),] 
   tabla_bbp_ordered <- tabla_bbp[match(lista,tabla_bbp$ID),] 
   #tabla_kd_ordered  <- tabla_kd[match(lista,tabla_kd$ID),]
-  
-  # dim(cloro_ordered)
-  # dim(tabla_rss_ordered)
-  # dim(tabla_aph_ordered)
-  # dim(tabla_adg_ordered)
-  # dim(tabla_bbp_ordered)
   
   fechas <- data.frame(cloro_ordered$Date.Time,      tabla_rss_ordered$Date.Time,
                        tabla_aph_ordered$Date.Time,  tabla_adg_ordered$Date.Time,
@@ -245,21 +228,21 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
                           tabla_aph_ordered$Latitude,  tabla_adg_ordered$Latitude,
                           tabla_bbp_ordered$Latitude),
                           MARGIN=1, FUN=mean, na.rm=TRUE)
-  sum(!is.na(latitude))
-  length(latitude)
+  #sum(!is.na(latitude))
+  #length(latitude)
   
   longitude <- apply(cbind(cloro_ordered$Longitude,      tabla_rss_ordered$Longitude,
                            tabla_aph_ordered$Longitude,  tabla_adg_ordered$Longitude,
                            tabla_bbp_ordered$Longitude),
                            MARGIN=1,FUN=mean, na.rm=TRUE)
-  sum(!is.na(longitude))
-  length(longitude)
+  #sum(!is.na(longitude))
+  #length(longitude)
   
   depth <- apply(cbind(cloro_ordered$Depth_water.m.,      tabla_rss_ordered$Depth.water..m.,
                        tabla_aph_ordered$Depth.water..m., tabla_adg_ordered$Depth.water..m.,
                        tabla_bbp_ordered$Depth.water..m.),
                        MARGIN=1,FUN=mean, na.rm=TRUE)
-  sum(!is.na(depth))
+  #sum(!is.na(depth))
   #sort(unique(depth))
   depth<-rep(5,length(depth))
   
@@ -268,7 +251,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
                         tabla_aph_ordered$QF.time,  tabla_adg_ordered$QF.time,
                         tabla_bbp_ordered$QF.time),
                         MARGIN=1,FUN=mean, na.rm=TRUE)
-  length(QFTime)
+  #length(QFTime)
   QFTime[is.nan(QFTime)] <- NA
   #unique(QFTime)
   
@@ -276,7 +259,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
                         tabla_aph_ordered$QF_Chl,  tabla_adg_ordered$QF_Chl,
                         tabla_bbp_ordered$QF_Chl),
                         MARGIN=1,FUN=mean, na.rm=TRUE)
-  length(QFChla)    
+  #length(QFChla)    
   QFChla[is.nan(QFChla)] <- NA
   #unique(QFChla)
   
@@ -298,7 +281,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/datasets_Valente/",sep=""
   tabla_total<-tabla_total[!is.na(tabla_total$longitude),]
   #dim(tabla_total)  
   #colnames(tabla_total)
-#######################
+##########################################
 save(tabla_total, file=paste(s_dir,"Valente2_ChlaRssIOP_modbands12.RData", sep=""))    
 
 
@@ -310,7 +293,7 @@ save(tabla_total, file=paste(s_dir,"Valente2_ChlaRssIOP_modbands12.RData", sep="
 ########################         
 p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
   
-#### RSS
+#### RRS
           reflectancia<-read.csv(paste(p_dir,"TOTAL_Chase_rrs.csv", sep=""))
           #reflectancia$Depth
           #dim(reflectancia)
@@ -359,13 +342,10 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
                 # unique(tabla_rss$Provider)
                 # save(tabla_rss,modelo_lambda, paste(p_dir,"insitudb_rrs_modbands12.RData", sep=""))
 
-
-
-
 #### HPLC 
        clorofila<-read.csv(paste(p_dir,"TOTAL_Chase_hplc.csv", sep=""))
        #clorofila$Depth
-       names(clorofila)
+       #names(clorofila)
        #dim(clorofila)
        clorofila[c(16)][clorofila[c(16)]<=0.001]<-NA
        clorofila[c(16)][clorofila[c(16)]>100]<-NA  
@@ -381,16 +361,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
   #dim(clorofila) 
 
   lista <- sort(unique(c(clorofila$ID,tabla_rss$ID)))
-  length(lista)
-  
-  sum(!is.na(match(lista,clorofila$ID)))
-  dim(clorofila) 
-  
-  sum(!is.na(match(lista,tabla_rss$ID)))
-  dim(tabla_rss)
-
-  sum(!is.na(match(lista,tabla_rss$ID)))
-  sum(!is.na(match(lista,clorofila$ID)))
+  #length(lista)
   
   cloro_ordered      <- clorofila[match(lista,clorofila$ID),] 
   tabla_rss_ordered  <- tabla_rss[match(lista,tabla_rss$ID),]
@@ -412,22 +383,21 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
   fecha3<-as.character(fecha)
   fecha3[fecha3=="character(0)"]<-NA
   
-  sum(!is.na(fecha))
-  length(fecha)
+  #sum(!is.na(fecha))
+  #length(fecha)
   
   latitude <- apply(cbind(cloro_ordered$Latitude,    tabla_rss_ordered$Latitude),    MARGIN=1, FUN=mean, na.rm=TRUE)
-  sum(!is.na(latitude))
-  length(latitude)
+  #sum(!is.na(latitude))
+  #length(latitude)
   
   longitude <- apply(cbind(cloro_ordered$Longitude,  tabla_rss_ordered$Longitude),MARGIN=1,FUN=mean, na.rm=TRUE)
-  sum(!is.na(longitude))
-  length(longitude)
+  #sum(!is.na(longitude))
+  #length(longitude)
   
   depth <- apply(cbind(cloro_ordered$Depth,    tabla_rss_ordered$Depth),MARGIN=1, FUN=mean, na.rm=TRUE)
-  sum(!is.na(depth))
-  sort(unique(depth))
-  length(depth)
-  
+  #sum(!is.na(depth))
+  #sort(unique(depth))
+  #length(depth)
 
   metadata <- data.frame(lista, fecha3, latitude, longitude, depth)  
   #colnames(cloro_ordered)
@@ -451,7 +421,7 @@ save(tabla_total, file=paste(s_dir,"Chase_RssHplc_modbands12.RData", sep=""))
 ########################     
 p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
   
-#### RSS
+#### RRS
     reflectancia<-read.csv(paste(p_dir,"TOTAL_Casey_rrs.csv", sep=""))
     #names(reflectancia)
     lon<-reflectancia$Longitude..degrees_east.
@@ -497,8 +467,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
          #unique(tabla_rss$Provider)
          #save(tabla_rss,modelo_lambda, paste(p_dir,"insitudb_rrs_modbands12.RData", sep=""))
             
-
-
 #### AP
     absorcion<-read.csv(paste(p_dir,"TOTAL_Casey_ap.csv", sep=""))
     #names(absorcion)
@@ -546,8 +514,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       #save(tabla_aph,modelo_lambda, paste(p_dir,"insitudb_rrs_modbands12.RData", sep=""))
 
 
-
-
 #### APH
     absorcion<-read.csv(paste(p_dir,"TOTAL_Casey_aph.csv", sep=""))
     #names(absorcion)
@@ -592,7 +558,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
        #unique(tabla_cp$Provider)
        #save(tabla_aph,modelo_lambda, paste(p_dir,"insitudb_rrs_modbands12.RData", sep=""))
             
-       
        
 #### ANAP
        absorcion<-read.csv(paste(p_dir,"TOTAL_Casey_anap.csv", sep=""))
@@ -705,44 +670,25 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
        #unique(tabla_cp$Provider)
        #save(tabla_aph,modelo_lambda, paste(p_dir,"insitudb_rrs_modbands12.RData", sep=""))       
        
-       
 ########################            
 
 #### Match all tables    
 #####################      
       #dim(tabla_rss)
       #dim(tabla_ap) 
-      #dim(tabla_aph)
-      #dim(tabla_anap)
-      #dim(tabla_acdom)
-      #dim(tabla_bbp)
-      tabla_ap$ID%in%tabla_rss$ID
-      tabla_rss$ID%in%tabla_ap$ID    
+      #tabla_ap$ID%in%tabla_rss$ID
+      #tabla_rss$ID%in%tabla_ap$ID    
 
       lista <- sort(unique(c(tabla_rss$ID,tabla_ap$ID,tabla_aph$ID,tabla_anap$ID,tabla_acdom$ID,tabla_bbp$ID)))
-      length(lista)
-      
-      sum(!is.na(match(lista,tabla_rss$ID)))
-      sum(!is.na(match(lista,tabla_ap$ID)))
-      sum(!is.na(match(lista,tabla_aph$ID)))
-      sum(!is.na(match(lista,tabla_anap$ID)))
-      sum(!is.na(match(lista,tabla_acdom$ID)))
-      sum(!is.na(match(lista,tabla_bbp$ID)))
-      
+      #length(lista)
+
       tabla_rss_ordered <- tabla_rss[match(lista,tabla_rss$ID),]
       tabla_ap_ordered  <- tabla_ap[match(lista,tabla_ap$ID),] 
       tabla_aph_ordered  <- tabla_aph[match(lista,tabla_aph$ID),] 
       tabla_anap_ordered  <- tabla_anap[match(lista,tabla_anap$ID),] 
       tabla_acdom_ordered  <- tabla_acdom[match(lista,tabla_acdom$ID),] 
       tabla_bbp_ordered  <- tabla_bbp[match(lista,tabla_bbp$ID),] 
-      
-      #names(tabla_rss_ordered)   sum(!is.na(tabla_rss_ordered$Depth))   sum(!is.na(tabla_rss$Depth))
-      #dim(tabla_ap_ordered)
-      #names(tabla_aph_ordered)   tabla_aph_ordered$Depth   tabla_aph$Depth
-      #dim(tabla_anap_ordered)
-      #dim(tabla_acdom_ordered)
-      #dim(tabla_bbp_ordered)
-      
+  
       ## Date.Time
       #colnames(tabla_rss_ordered)
       tabla_rss_ordered_date<-paste(tabla_rss_ordered[,10],"-",sprintf("%02d", tabla_rss_ordered[,11]),"-",sprintf("%02d", tabla_rss_ordered[,12]),sep="")
@@ -774,21 +720,21 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       fecha  <- apply(fechas, MARGIN=1, function(x)unique(x[!is.na(x)]))
       fecha3<-as.character(fecha)
       fecha3[fecha3=="character(0)"]<-NA  
-      length(fecha3)
+      #length(fecha3)
 
       latitude <- apply(cbind(tabla_rss_ordered$Latitude,   tabla_ap_ordered$Latitude,
                               tabla_aph_ordered$Latitude,   tabla_anap_ordered$Latitude,
                               tabla_acdom_ordered$Latitude, tabla_bbp_ordered$Latitude),
                               MARGIN=1, FUN=mean, na.rm=TRUE)
-      sum(!is.na(latitude))
-      length(latitude)
+      #sum(!is.na(latitude))
+      #length(latitude)
       
       longitude <- apply(cbind(tabla_rss_ordered$Longitude, tabla_ap_ordered$Longitude,
                                tabla_aph_ordered$Longitude, tabla_anap_ordered$Longitude,
                                tabla_acdom_ordered$Longitude, tabla_bbp_ordered$Longitude),
                                MARGIN=1,FUN=mean, na.rm=TRUE)
-      sum(!is.na(longitude))
-      length(longitude)
+      #sum(!is.na(longitude))
+      #length(longitude)
       
       depth <- apply(cbind(tabla_rss_ordered$Depth,   tabla_ap_ordered$Depth,
                            tabla_aph_ordered$Depth,   tabla_anap_ordered$Depth,
@@ -799,9 +745,9 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       #      tabla_aph_ordered$Depth,   tabla_anap_ordered$Depth,
       #      tabla_acdom_ordered$Depth, tabla_bbp_ordered$Depth, depth)      
       
-      sum(!is.na(depth))
+      #sum(!is.na(depth))
       #sort(unique(depth))
-      length(depth)
+      #length(depth)
 
       #plot(depth,tabla_rss_ordered[,22],xlim=c(0,5))
       
@@ -838,8 +784,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       #lon<-reflectancia$Longitude
       #lat<-reflectancia$Latitude
       #unique(reflectancia$CRUISE)
-      #unique(reflectancia$Provider)            
-      
+      #unique(reflectancia$Provider)
       nombres_lambda <- names(reflectancia)[c(17:37)]
       numeros_lambda <- as.numeric(substring(nombres_lambda,2,4))          
       reflectancia[c(17:37)][reflectancia[c(17:37)]==(-999)]<-NA
@@ -868,7 +813,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
      tabla_ap <- cbind(reflectancia[,c(1:16)],nueva_reflec) 
      #colnames(tabla_ap)
 
-     
 #### APH
       reflectancia<-read.csv(paste(p_dir,"TOTAL_CSIRO_aph.csv", sep=""))
       #names(reflectancia)
@@ -899,7 +843,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       tabla_aph <- cbind(reflectancia[,c(1:16)],nueva_reflec) 
       #colnames(tabla_aph)
       
-     
 #### ACDOM
       reflectancia<-read.csv(paste(p_dir,"TOTAL_CSIRO_acdom.csv", sep=""))
       #names(reflectancia)
@@ -929,7 +872,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       colnames(nueva_reflec) <- paste("acdom_",modelo_lambda, sep="")
       tabla_acdom <- cbind(reflectancia[,c(1:16)],nueva_reflec) 
       #colnames(tabla_acdom)      
-      
       
 #### AD
       reflectancia<-read.csv(paste(p_dir,"TOTAL_CSIRO_ad.csv", sep=""))
@@ -964,28 +906,18 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
 #### Match all tables    
 #####################      
-      #dim(tabla_ap) 
-      #dim(tabla_aph)
-      #dim(tabla_acdom)
-      #dim(tabla_ad)
 
       lista <- sort(unique(c(tabla_ap$ID,tabla_aph$ID,tabla_acdom$ID,tabla_ad$ID)))
-      length(lista)
-
-      sum(!is.na(match(lista,tabla_ap$ID)))
-      sum(!is.na(match(lista,tabla_aph$ID)))
-      sum(!is.na(match(lista,tabla_acdom$ID)))
-      sum(!is.na(match(lista,tabla_ad$ID)))
+      #length(lista)
+      #sum(!is.na(match(lista,tabla_ap$ID)))
+      #sum(!is.na(match(lista,tabla_aph$ID)))
+      #sum(!is.na(match(lista,tabla_acdom$ID)))
+      #sum(!is.na(match(lista,tabla_ad$ID)))
       
       tabla_ap_ordered     <- tabla_ap[match(lista,tabla_ap$ID),] 
       tabla_aph_ordered    <- tabla_aph[match(lista,tabla_aph$ID),] 
       tabla_acdom_ordered  <- tabla_acdom[match(lista,tabla_acdom$ID),] 
       tabla_ad_ordered     <- tabla_ad[match(lista,tabla_ad$ID),] 
-      
-      #names(tabla_ap_ordered)     #tabla_ap_ordered$Depth
-      #dim(tabla_aph_ordered)      #tabla_aph_ordered$Depth
-      #dim(tabla_acdom_ordered)
-      #dim(tabla_ad_ordered)
       
       ## Date.Time
       #colnames(tabla_ap_ordered)
@@ -1010,27 +942,27 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       fecha  <- apply(fechas, MARGIN=1, function(x)unique(x[!is.na(x)]))
       fecha3<-as.character(fecha)
       fecha3[fecha3=="character(0)"]<-NA  
-      length(fecha3)
+      #length(fecha3)
       
       latitude <- apply(cbind(tabla_ap_ordered$Latitude,    tabla_aph_ordered$Latitude,   
                               tabla_acdom_ordered$Latitude, tabla_ad_ordered$Latitude),
                               MARGIN=1, FUN=mean, na.rm=TRUE)
-      sum(!is.na(latitude))
-      length(latitude)
+      #sum(!is.na(latitude))
+      #length(latitude)
       
       longitude <- apply(cbind(tabla_ap_ordered$Longitude,     tabla_aph_ordered$Longitude, 
                                tabla_acdom_ordered$Longitude,  tabla_ad_ordered$Longitude),
                                MARGIN=1,FUN=mean, na.rm=TRUE)
-      sum(!is.na(longitude))
-      length(longitude)
+      #sum(!is.na(longitude))
+      #length(longitude)
       
       depth <- apply(cbind(tabla_ap_ordered$Depth,     tabla_aph_ordered$Depth, 
                            tabla_acdom_ordered$Depth,  tabla_ad_ordered$Depth),
                            MARGIN=1,FUN=mean, na.rm=TRUE)
       depth[is.nan(depth)]<-NA
-      sum(!is.na(depth))
+      #sum(!is.na(depth))
       #sort(unique(depth))
-      length(depth)
+      #length(depth)
       #cbind(tabla_ap_ordered$Depth,     tabla_aph_ordered$Depth, tabla_acdom_ordered$Depth,  tabla_ad_ordered$Depth, depth)      
 
       #colnames(tabla_aph_ordered)
@@ -1045,7 +977,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       #head(tabla_total)
       tabla_total<-tabla_total[!is.nan(tabla_total$longitude),]
       #dim(tabla_total)      
-      
       
 ###############      
 save(tabla_total, file=paste(s_dir,"CSIRO_Iop_modbands12.RData", sep=""))         
@@ -1087,7 +1018,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       }
       #reflectancia[reflectancia==0]<-NA
       colnames(nueva_reflec) <- paste("ap_",modelo_lambda, sep="")
-      names(reflectancia)[c(1:4,6,7,9:16,8,18:19)]
+      #names(reflectancia)[c(1:4,6,7,9:16,8,18:19)]
       tabla_ap2 <- cbind(reflectancia[,c(1:4,6,7,9:16,8,18:19)],nueva_reflec) 
       #dim(tabla_ap2) 
       
@@ -1118,12 +1049,11 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
         } else {nueva_reflec[,i]<-rep(NA,length=nrow(reflectancia))}
       }
       #reflectancia[reflectancia==0]<-NA
-      colnames(tabla_ap2)
-      names(reflectancia)[c(1:4,6:16,18:19)]
+      #colnames(tabla_ap2)
+      #names(reflectancia)[c(1:4,6:16,18:19)]
       colnames(nueva_reflec) <- paste("ap_",modelo_lambda, sep="")
       tabla_ap1 <- cbind(reflectancia[,c(1:4,6:16,18:19)],nueva_reflec) 
       #dim(tabla_ap1)       
-      
       #cbind(colnames(tabla_ap2),colnames(tabla_ap1))
       
       colnames(tabla_ap1)<-colnames(tabla_ap2)           
@@ -1160,7 +1090,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
       #reflectancia[reflectancia==0]<-NA
       colnames(nueva_reflec) <- paste("aph_",modelo_lambda, sep="")
-      names(reflectancia)[c(1:5,12,6:11,14:16,18:19)]
+      #names(reflectancia)[c(1:5,12,6:11,14:16,18:19)]
       tabla_aph2 <- cbind(reflectancia[,c(1:5,12,6:11,14:16,18:19)],nueva_reflec) 
       #colnames(tabla_aph2) 
       #dim(tabla_aph2) 
@@ -1193,12 +1123,11 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
       #reflectancia[reflectancia==0]<-NA
       colnames(nueva_reflec) <- paste("aph_",modelo_lambda, sep="")
-      names(reflectancia)[c(1:17)]
+      #names(reflectancia)[c(1:17)]
       tabla_aph1 <- cbind(reflectancia[,c(1:17)],nueva_reflec) 
       #colnames(tabla_aph1) 
       #dim(tabla_aph1) 
-      
-      cbind(colnames(tabla_aph2),colnames(tabla_aph1))      
+      #cbind(colnames(tabla_aph2),colnames(tabla_aph1))      
       
       #colnames(tabla_aph1)<-colnames(tabla_aph2)           
       tabla_aph<-rbind(tabla_aph2,tabla_aph1)      
@@ -1209,8 +1138,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
 #### ANAP
       # 2nm
       reflectancia<-read.csv(paste(p_dir,"TOTAL_Astrid4_anap_2nm.csv", sep=""))
-      names(reflectancia)
-      reflectancia[,6]
+      #names(reflectancia)
       nombres_lambda <- names(reflectancia)[c(20:245)]
       numeros_lambda <- as.numeric(substring(nombres_lambda,2,4))          
       reflectancia[c(20:245)][reflectancia[c(20:245)]==(-999)]<-NA
@@ -1235,14 +1163,13 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
       #reflectancia[reflectancia==0]<-NA
       colnames(nueva_reflec) <- paste("anap_",modelo_lambda, sep="")
-      names(reflectancia)[c(1:5,12,6:11,14:16,18,19)]
+      #names(reflectancia)[c(1:5,12,6:11,14:16,18,19)]
       tabla_anap2 <- cbind(reflectancia[,c(1:5,12,6:11,14:16,18,19)],nueva_reflec) 
       #colnames(tabla_anap2)            
       
       # 1nm
       reflectancia<-read.csv(paste(p_dir,"TOTAL_Astrid4_anap_1nm.csv", sep=""))
       #names(reflectancia)
-      reflectancia[,7]
       nombres_lambda <- names(reflectancia)[c(17:417)]
       numeros_lambda <- as.numeric(substring(nombres_lambda,2,4))          
       reflectancia[c(17:417)][reflectancia[c(17:417)]==(-999)]<-NA
@@ -1267,11 +1194,11 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
       #reflectancia[reflectancia==0]<-NA
       colnames(nueva_reflec) <- paste("anap_",modelo_lambda, sep="")
-      names(reflectancia)[c(1:5,5,7:14,6,15:16)]
+      #names(reflectancia)[c(1:5,5,7:14,6,15:16)]
       tabla_anap1 <- cbind(reflectancia[,c(1:5,5,7:14,6,15:16)],nueva_reflec) 
       #colnames(tabla_anap2)
       #colnames(tabla_anap1)
-      cbind(colnames(tabla_anap2),colnames(tabla_anap1))      
+      #cbind(colnames(tabla_anap2),colnames(tabla_anap1))      
       colnames(tabla_anap1)<-colnames(tabla_anap2)           
       tabla_anap<-rbind(tabla_anap2,tabla_anap1)      
       #colnames(tabla_anap)      
@@ -1280,8 +1207,7 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
 ## ACDOM      
       # 2nm
       reflectancia<-read.csv(paste(p_dir,"TOTAL_Astrid4_acdom_2nm.csv", sep=""))
-      names(reflectancia)
-      #reflectancia[,6]
+      #names(reflectancia)
       nombres_lambda <- names(reflectancia)[c(21:271)]
       numeros_lambda <- as.numeric(substring(nombres_lambda,2,4))          
       reflectancia[c(21:271)][reflectancia[c(21:271)]==(-999)]<-NA
@@ -1306,16 +1232,15 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
       #reflectancia[reflectancia==0]<-NA
       colnames(nueva_reflec) <- paste("acdom_",modelo_lambda, sep="")
-      names(reflectancia)[c(1:4,6:7,10:17,9,19,20)]
+      #names(reflectancia)[c(1:4,6:7,10:17,9,19,20)]
       tabla_acdom <- cbind(reflectancia[,c(1:4,6:7,10:17,9,19,20)],nueva_reflec)
       #cbind(colnames(tabla_anap2),colnames(tabla_acdom))      
       
-      
-
+    
 ## RRS
       # 1nm
       reflectancia<-read.csv(paste(p_dir,"TOTAL_Astrid4_rrs_1nm.csv", sep=""))
-      names(reflectancia)
+      #names(reflectancia)
       #reflectancia[,6]
       nombres_lambda <- names(reflectancia)[c(18:418)]
       numeros_lambda <- as.numeric(substring(nombres_lambda,2,4))          
@@ -1346,13 +1271,12 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       tabla_rrs <- cbind(reflectancia[,c(1:17)],nueva_reflec)
       #cbind(colnames(tabla_anap2),colnames(tabla_rrs))            
       
-      
-      cbind(colnames(tabla_ap),colnames(tabla_aph),colnames(tabla_anap),colnames(tabla_acdom), colnames(tabla_rrs))
+      #cbind(colnames(tabla_ap),colnames(tabla_aph),colnames(tabla_anap),colnames(tabla_acdom), colnames(tabla_rrs))
       
 ## HPLC
       #clorofila<-read.csv(paste(p_dir,"TOTAL_Astrid5_hplc.csv", sep="")) # corrected on March2022, 1 sample matched incorrectly to MSM09_ap_1nm
       clorofila<-read.csv(paste(p_dir,"TOTAL_Astrid6_hplc.csv", sep="")) 
-      names(clorofila)
+      #names(clorofila)
       #dim(clorofila)
       clorofila[c(24)][clorofila[c(24)]<=0.001]<-NA
       clorofila[c(24)][clorofila[c(24)]>100]<-NA  
@@ -1362,20 +1286,15 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       
 #### Match all tables    
 #####################      
-      #dim(tabla_ap) 
-      #dim(tabla_aph)
-      #dim(tabla_anap)
-      #dim(clorofila)
-      
+
       lista <- sort(unique(c(tabla_ap$ID,tabla_aph$ID,tabla_anap$ID,clorofila$ID)))
-      length(lista)
-      
-      sum(!is.na(match(lista,tabla_ap$ID)))
-      sum(!is.na(match(lista,tabla_aph$ID)))
-      sum(!is.na(match(lista,tabla_anap$ID)))
-      sum(!is.na(match(lista,tabla_acdom$ID)))
-      sum(!is.na(match(lista,tabla_rrs$ID)))
-      sum(!is.na(match(lista,clorofila$ID)))
+      #length(lista)
+      #sum(!is.na(match(lista,tabla_ap$ID)))
+      #sum(!is.na(match(lista,tabla_aph$ID)))
+      #sum(!is.na(match(lista,tabla_anap$ID)))
+      #sum(!is.na(match(lista,tabla_acdom$ID)))
+      #sum(!is.na(match(lista,tabla_rrs$ID)))
+      #sum(!is.na(match(lista,clorofila$ID)))
       
       tabla_ap_ordered    <- tabla_ap[match(lista,tabla_ap$ID),] 
       tabla_aph_ordered   <- tabla_aph[match(lista,tabla_aph$ID),] 
@@ -1384,12 +1303,6 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       tabla_rrs_ordered   <- tabla_rrs[match(lista,tabla_rrs$ID),] 
       cloro_ordered       <- clorofila[match(lista,clorofila$ID),] 
 
-      dim(tabla_aph_ordered)
-      dim(tabla_anap_ordered)
-      dim(tabla_acdom_ordered)
-      dim(tabla_rrs_ordered)
-      dim(cloro_ordered)
-      
       ## Date.Time
       #colnames(tabla_ap_ordered)
       tabla_ap_ordered_date<-paste(tabla_ap_ordered[,8],"-",sprintf("%02d", tabla_ap_ordered[,9]),"-",sprintf("%02d", tabla_ap_ordered[,10]),sep="")
@@ -1426,37 +1339,36 @@ p_dir<-paste(global_path,"Dat_observations/optics/csvs/",sep="")
       fecha  <- apply(fechas, MARGIN=1, function(x)min(x[!is.na(x)]))
       fecha3<-as.character(fecha)
       fecha3[fecha3=="character(0)"]<-NA  
-      length(fecha3)
-      
-      colnames(tabla_ap_ordered)
-      data.frame(tabla_ap_ordered$ID, fechas)
+      #length(fecha3)
+      #colnames(tabla_ap_ordered)
+      #data.frame(tabla_ap_ordered$ID, fechas)
       #write.csv(resul,file=paste(s_dir,"check_dates.csv", sep=""))
       
       latitude <- apply(cbind(tabla_ap_ordered$Latitude,    tabla_aph_ordered$Latitude,   
                               tabla_anap_ordered$Latitude,
                               tabla_acdom_ordered$Latitude, tabla_rrs_ordered$Latitude,
                               cloro_ordered$Latitude),  MARGIN=1, FUN=mean, na.rm=TRUE)
-      sum(!is.na(latitude))
-      length(latitude)
+      #sum(!is.na(latitude))
+      #length(latitude)
       
       longitude <- apply(cbind(tabla_ap_ordered$Longitude,     tabla_aph_ordered$Longitude, 
                                tabla_anap_ordered$Longitude,
                                tabla_acdom_ordered$Longitude,  tabla_rrs_ordered$Longitude,                               
                                cloro_ordered$Longitude),     MARGIN=1,FUN=mean, na.rm=TRUE)
-      sum(!is.na(longitude))
-      length(longitude)
+      #sum(!is.na(longitude))
+      #length(longitude)
       
       depth <- apply(cbind(tabla_ap_ordered$Depth,     tabla_aph_ordered$Depth, 
                            tabla_anap_ordered$Depth,
                            tabla_acdom_ordered$Depth,  tabla_rrs_ordered$Depth,
                            cloro_ordered$Depth),  MARGIN=1,FUN=mean, na.rm=TRUE)
       depth[is.nan(depth)]<-NA
-      cbind(tabla_ap_ordered$Depth,     tabla_aph_ordered$Depth, 
-            tabla_anap_ordered$Depth,
-            tabla_acdom_ordered$Depth,  tabla_rrs_ordered$Depth,  cloro_ordered$Depth, depth)
-      sum(!is.na(depth))
+      #cbind(tabla_ap_ordered$Depth,     tabla_aph_ordered$Depth, 
+      #      tabla_anap_ordered$Depth,
+      #      tabla_acdom_ordered$Depth,  tabla_rrs_ordered$Depth,  cloro_ordered$Depth, depth)
+      #sum(!is.na(depth))
       #sort(unique(depth))
-      length(depth)
+      #length(depth)
       
       #colnames(tabla_anap_ordered)
       #colnames(cloro_ordered)

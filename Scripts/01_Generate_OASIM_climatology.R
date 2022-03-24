@@ -1,10 +1,11 @@
 source("00_Summary_EDITME.R")
 
 # OASIM Input Light Below Ocean Surface
-# Input: original NetCDF files obtained from /gmaoftp/NOBM/monthly/eds
+# Input: original NetCDF files obtained from:
+# https://gmao.gsfc.nasa.gov/gmaoftp/NOBM/monthly/eds/
 # User-defined: initial/final wavebands to extract, and initial/final years to average
 # Output: one binary file with one climatological year for each waveband
-## The format can be checked in the example binary files (loc1_oasim) in MITgcm_contrib/darwin2/verification/radtrans_1d
+## The format can be checked in the example binary files (loc1_oasim) in MITgcm_contrib/darwin2/verification/radtrans_1d with:
 ## file.info(paste(pdir,"loc1_oasim_edp_below.bin", sep=""))
 ## scan(paste(pdir,"loc1_oasim_edp_below.bin", sep=""), raw())
 
