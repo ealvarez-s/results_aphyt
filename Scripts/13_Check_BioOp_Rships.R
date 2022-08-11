@@ -1,5 +1,5 @@
-source("00_Summary_EDITME.R")
-source("functions_misc.R")
+source("Scripts/00_Summary_EDITME.R")
+source("Scripts/functions_misc.R")
 
 ###############################
 ## BIO-OPTICAL RELATIONSHIPS
@@ -17,16 +17,16 @@ source("functions_misc.R")
           ruta<-experimentos$path[c(21,9)]
           nombre <- c(expression(paste({a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
                       expression(paste({a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
-          nombre <- c(expression(paste("EXP-1: ",{a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
-                      expression(paste("EXP-2: ",{a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
+          nombre <- c(expression(paste("EXP-noPPC: ",{a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
+                      expression(paste("EXP-PPC: ",{a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
           
 
 
 ############# 
-### FIGURE 9:  Chla vs Aph(450), with obs from Valente+Bracher, and Bricaud (1995, 2004) relships
+### FIGURE 8:  Chla vs Aph(450), with obs from Valente+Bracher, and Bricaud (1995, 2004) relships
 ############
 
-png(file=paste(path_figures,"Figure9_chla_vs_Aph.png", sep=""), width = 1320, height = 450, units = "px",pointsize = 19, bg = "white")
+png(file=paste(path_figures,"Figure8_chla_vs_Aph.png", sep=""), width = 1320, height = 450, units = "px",pointsize = 19, bg = "white")
             layout(matrix(c(1,2,3),ncol=3,byrow=T))
             par(family="")
             par(mar=c(4,4.5,2,2))  
@@ -51,14 +51,15 @@ png(file=paste(path_figures,"Figure9_chla_vs_Aph.png", sep=""), width = 1320, he
             ies<-log10(tabla_total$aph_450)  
             flag1<-tabla_total[,which(colnames(tabla_total)=="QFChla")] 
             equis[flag1==1]<-NA              
-            
+            sum(complete.cases(cbind(equis,ies)))
+             
             plot(equis,ies,pch=19,col="grey30", las=1,xlim=c(-2.5,2), ylim=c(-3.5,0.2),xaxt="n", yaxt="n", xaxs="i",yaxs="i",
                  xlab=expression(paste("TChla (mg ",m^-3,")",sep='')),ylab=expression(paste(a[PH]," (450nm) [",m^-1,"]",sep='')),
                  cex.lab=cexlab, cex.main=cextitle, main=expression(italic("In situ"))) 
                       axis(1,at=seq(-2,2,by=1),labels=10^seq(-2,2,by=1), las=1, cex.axis=cexaxis)
                       axis(2,at=seq(-3,0,by=1),labels=10^seq(-3,0,by=1), las=1, cex.axis=cexaxis)
                       
-            mtext(3,at=-2.5, adj=0, line=0.5, text="a)", cex=lettersize, font=1)
+            mtext(3,at=-3.1, adj=0, line=0.5, text="a)", cex=lettersize, font=1)
                       tabla<-cbind(equis,ies)
                       tabla[is.nan(tabla)]<-NA
                       tabla[tabla=="Inf"]<-NA
@@ -79,7 +80,8 @@ png(file=paste(path_figures,"Figure9_chla_vs_Aph.png", sep=""), width = 1320, he
             flag3<-tabla_total[,which(colnames(tabla_total)=="MYFLAG3")]
             flag5<-tabla_total[,which(colnames(tabla_total)=="MYFLAG5")]
             equis[flag3==3]<-NA 
-
+            sum(complete.cases(cbind(equis,ies)))
+            
             points(equis,ies, pch=19,col="grey70", las=1, xlim=c(-3,1), ylim=c(-3,0)) 
                 tabla<-cbind(equis,ies)
                 tabla[is.nan(tabla)]<-NA
@@ -150,8 +152,8 @@ png(file=paste(path_figures,"Figure9_chla_vs_Aph.png", sep=""), width = 1320, he
 
                  plot(log10(cloro), log10(X), type="n", las=1, pch=19, cex=0.08, ylim=c(-3.5,0.2), xlim=c(-2.5, 2), xaxt="n", yaxt="n", xaxs="i",yaxs="i", main=nombre[w],
                       xlab=expression(paste("TChla (mg ",m^-3,")",sep='')),ylab=expression(paste(a[PH]," (450nm) [",m^-1,"]",sep='')), cex.lab=cexlab, cex.main=cextitle)
-                   if (w==1){mtext(3,at=-2.5,adj=0,line=0.5, text="b)", cex=lettersize, font=1)}       
-                   if (w==2){mtext(3,at=-2.5,adj=0,line=0.5, text="c)", cex=lettersize, font=1)}  
+                   if (w==1){mtext(3,at=-3.1,adj=0,line=0.5, text="b)", cex=lettersize, font=1)}       
+                   if (w==2){mtext(3,at=-3.1,adj=0,line=0.5, text="c)", cex=lettersize, font=1)}  
                    
                  points(log10(cloro), log10(X), las=1, pch=19, cex=0.08, ylim=c(-3.5,0.2), xlim=c(-2.5, 2), xaxt="n", yaxt="n", col=colores_puntos[w])
                         axis(1,at=seq(-2,2,by=1),labels=10^seq(-2,2,by=1), las=1, cex.axis=cexaxis)
@@ -196,10 +198,10 @@ dev.off()
             
             
 ############# 
-### FIGURE 10   TChla vs A*ph(450), with obs from Bracher
+### FIGURE 9   TChla vs A*ph(450), with obs from Bracher
 ############
                
-     png(file=paste(path_figures,"Figure10_chl_specific_aph.png", sep=""), width = 1220, height = 850, units = "px",pointsize = 18.5, bg = "white")
+     png(file=paste(path_figures,"Figure9_chl_specific_aph.png", sep=""), width = 1220, height = 850, units = "px",pointsize = 18.5, bg = "white")
             layout(matrix(c(1:6),ncol=3,byrow=T))
             par(family="")
             par(mar=c(4,4.7,2,2))  
@@ -229,7 +231,7 @@ dev.off()
               cex.lab=cexlab, cex.main=cextitle, main=expression(italic("In situ")),)
               axis(1,at=seq(-3,3,by=1),labels=10^seq(-3,3,by=1), las=1, cex.axis=cexaxis)
               axis(2,at=seq(0,0.3,by=0.05), las=1, cex.axis=cexaxis)
-              mtext(3,at=-2.5,adj=0, line=0.5, text="a)", cex=lettersize, font=1)
+              mtext(3,at=-2.9,adj=0, line=0.5, text="a)", cex=lettersize, font=1)
             
               tabla<-cbind(equis,ies)
               tabla[is.nan(tabla)]<-NA
@@ -306,8 +308,8 @@ dev.off()
                    xaxt="n", yaxt="n", xaxs="i",yaxs="i", main=nombre[w],  cex.main=cextitle,
                    xlab=expression(paste("TChla (mg ",m^-3,")",sep='')),
                    ylab=expression(paste({a^{"*"}}[PH]," (450nm) [",m^2," mg ",Chl^-1,"]",sep='')), cex.lab=cexlab)
-              if (w==1){mtext(3,at=-2.5,adj=0, line=0.5, text="b)", cex=lettersize, font=1)}       
-              if (w==2){mtext(3,at=-2.5,adj=0, line=0.5, text="c)", cex=lettersize, font=1)}  
+              if (w==1){mtext(3,at=-2.9,adj=0, line=0.5, text="b)", cex=lettersize, font=1)}       
+              if (w==2){mtext(3,at=-2.9,adj=0, line=0.5, text="c)", cex=lettersize, font=1)}  
               
               points(equis, ies, las=1, pch=19, cex=0.08, ylim=c(-3.5,0.2), xlim=c(-2.5,2),xaxt="n", yaxt="n", main=nombre[w], col=colores_puntos[w])
               axis(1,at=seq(-3,3,by=1),labels=10^seq(-3,3,by=1), las=1, cex.axis=cexaxis)
@@ -399,24 +401,24 @@ dev.off()
                 Q1[unlist(cuantos[,2])<10,2]<-NA 
             
                 # TChla   
-                media_cloro <- aggregate(zetas2~niveles,experiment, mean, na.rm=TRUE, drop=F, simplify=FALSE)
+                media_cloro <- aggregate(zetas2~niveles,experiment, mean, na.rm=TRUE, drop=F, simplify=T)
                 media_cloro[unlist(cuantos[,2])<5,2]<-NA            
-                Q3_cloro <- aggregate(zetas2~niveles,experiment, quantile, probs=0.75, na.rm=TRUE, drop=F, simplify=FALSE)
+                Q3_cloro <- aggregate(zetas2~niveles,experiment, quantile, probs=0.75, na.rm=TRUE, drop=F, simplify=T)
                 Q3_cloro[unlist(cuantos[,2])<5,2]<-NA
-                Q2_cloro <- aggregate(zetas2~niveles,experiment, quantile, probs=0.25, na.rm=TRUE, drop=F, simplify=FALSE)
+                Q2_cloro <- aggregate(zetas2~niveles,experiment, quantile, probs=0.25, na.rm=TRUE, drop=F, simplify=T)
                 Q2_cloro[unlist(cuantos[,2])<5,2]<-NA            
-                sd_cloro <- aggregate(zetas2~niveles,experiment, sd, na.rm=TRUE, drop=F, simplify=FALSE)
+                sd_cloro <- aggregate(zetas2~niveles,experiment, sd, na.rm=TRUE, drop=F, simplify=T)
                 Q3_cloro<-media_cloro+sd_cloro
                 Q2_cloro<-media_cloro-sd_cloro
                 
                 # PPC:TChla
-                media_ppc <- aggregate(zetas3~niveles,experiment, mean, na.rm=TRUE, drop=F, simplify=FALSE)
+                media_ppc <- aggregate(zetas3~niveles,experiment, mean, na.rm=TRUE, drop=F, simplify=T)
                 media_ppc[unlist(cuantos[,2])<5,2]<-NA 
-                Q3_ppc <- aggregate(zetas3~niveles,experiment, quantile, probs=0.75, na.rm=TRUE, drop=F, simplify=FALSE)
+                Q3_ppc <- aggregate(zetas3~niveles,experiment, quantile, probs=0.75, na.rm=TRUE, drop=F, simplify=T)
                 Q3_ppc[unlist(cuantos[,2])<5,2]<-NA
-                Q2_ppc <- aggregate(zetas3~niveles,experiment, quantile, probs=0.25, na.rm=TRUE, drop=F, simplify=FALSE)
+                Q2_ppc <- aggregate(zetas3~niveles,experiment, quantile, probs=0.25, na.rm=TRUE, drop=F, simplify=T)
                 Q2_ppc[unlist(cuantos[,2])<5,2]<-NA
-                sd_ppc <- aggregate(zetas3~niveles,experiment, sd, na.rm=TRUE, drop=F, simplify=FALSE)
+                sd_ppc <- aggregate(zetas3~niveles,experiment, sd, na.rm=TRUE, drop=F, simplify=T)
                 Q3_ppc<-media_ppc+sd_ppc
                 Q2_ppc<-media_ppc-sd_ppc                
                 
@@ -459,17 +461,17 @@ dev.off()
             plot(1, 1, type="n",xlim=c(0,0.30), ylim=c(200,limsurface), las=1, xlab="",ylab="depth (m)",
                xaxs="i",yaxs="i",
                cex.lab=cexlab, cex.axis=cexaxis, bty="n")
-                mtext(3,at=0,adj=0, line=0.5, text="d)", cex=lettersize, font=1)
+         mtext(3,at=-0.018, adj=0, line=0.5, text="d)", cex=lettersize, font=1)
                 mtext(1,line=2.2, at=0.150, text=expression(paste({a^{"*"}}[PH]," (450nm) [",m^2," mg ",Chl^-1,"]",sep='')), cex=0.8)
                 
-                for (i in c(1:10)){
-                segments(x0=unlist(Q1[i,2]),x1=unlist(Q4[i,2]),y0=prof_model[i], lwd=2, lend="square")
-                segments(x0=unlist(Q2[i,2]),x1=unlist(Q3[i,2]),y0=prof_model[i], lwd=10,col="grey60", lend="square")
+                for (i in c(1:8)){
+                segments(x0=unname(unlist(Q1[i,2])),x1=unname(unlist(Q4[i,2])),y0=prof_model[i], lwd=2, lend="square")
+                segments(x0=unname(unlist(Q2[i,2])),x1=unname(unlist(Q3[i,2])),y0=prof_model[i], lwd=10,col="grey60", lend="square")
                 points(medias[i,2],prof_model[i], pch=22, col="white", bg="white")
                 #boxplot(zetas[profundidad==i], add=T, at=prof_model[i], horizontal=T) 
                 }
      # n           
-     text(x=unlist(Q4[,2])[1:8],y=prof_model[1:8], pos=4,labels=paste("n = ",unlist(cuantos[,2])[1:8],sep=""))
+     text(x=unname(unlist(Q4[,2])[1:8]),y=prof_model[1:8], pos=4,labels=paste("n = ",unlist(cuantos[,2])[1:8],sep=""))
             
 #################              
   
@@ -517,8 +519,8 @@ dev.off()
                   Q3_ratioP<-rep(NA,length=30)
                   Q2_ratioP<-rep(NA,length=30)
 
-              if (w==1){mtext(3,at=0,adj=0, line=0.5, text="e)", cex=lettersize, font=1)}       
-              if (w==2){mtext(3,at=0,adj=0, line=0.5, text="f)", cex=lettersize, font=1)}  
+              if (w==1){mtext(3,at=-0.0210,adj=0, line=0.5, text="e)", cex=lettersize, font=1)}       
+              if (w==2){mtext(3,at=-0.0155,adj=0, line=0.5, text="f)", cex=lettersize, font=1)}  
               
               
               for (i in c(1:10)){

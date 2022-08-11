@@ -1,8 +1,11 @@
-# Custom functions
-source("functions_misc.R")
 
 # Working directory
 global_path<-"/Users/echo_user/GIT_locales/results_aphyt/"
+setwd(global_path)
+
+# Custom functions
+source("Scripts/functions_misc.R")
+
 
 ## Required packages
 library(abind)

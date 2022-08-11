@@ -1,5 +1,5 @@
-source("00_Summary_EDITME.R")
-source("functions_misc.R")
+source("Scripts/00_Summary_EDITME.R")
+source("Scripts/functions_misc.R")
 
 #######################         
 #### FIGURES in DEPTH constant vs variable
@@ -23,8 +23,8 @@ source("functions_misc.R")
   
       modelnames<-experimentos$name[c(21,9)]
       ruta<-experimentos$path[c(21,9)]        
-      nombre <- c(expression(paste("EXP-1: ",{a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
-                  expression(paste("EXP-2: ",{a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
+      nombre <- c(expression(paste("EXP-noPPC: ",{a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
+                  expression(paste("EXP-PPC: ",{a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
       
 
             ## Color palette
@@ -32,14 +32,14 @@ source("functions_misc.R")
             mycol2<-usecol(pal_petrol,n=4)
             colores_puntos<-c(mycol1[3],mycol2[3])
             colores<-c(mycol1[1],mycol2[1])
-            custom_scale<-wes_palette(length(custom_scale),name = "Zissou1", type = "continuous")
+            custom_scale<-wes_palette(10,name = "Zissou1", type = "continuous")
             custom_scale <- c("deepskyblue4","deepskyblue3","darkslategray1","mediumaquamarine","greenyellow","yellow",
                               "gold1","orange", "tomato","orangered2")
     
     
     
 ####################
-## FIGURE 6 Absorption of constituents in depth
+## FIGURE 5 Absorption of constituents in depth
 ####################
     
     myfunc <- function(x){
@@ -47,9 +47,9 @@ source("functions_misc.R")
       else {return(as.numeric(unlist(which(x==max(x, na.rm=TRUE)))))}}
   
   
-png(file=paste(path_figures,"Figure6_IOPs_depth_dominance.png",sep=""), width = 1200, height = 800, pointsize = 18,units = "px",bg = "white") 
+png(file=paste(path_figures,"Figure5_IOPs_depth_dominance.png",sep=""), width = 1200, height = 820, pointsize = 18,units = "px",bg = "white") 
     layout(matrix(c(1,4:7,2,8:11,3,12:15),ncol=3, byrow=FALSE),widths=c(1,1,0.18))
-    par(mar=c(2,2,1,1))
+    par(mar=c(2.5,2,1,1))
     par(oma=c(2,3,2,2))
     lettersize=1.8
     textinner=1.2
@@ -76,14 +76,14 @@ png(file=paste(path_figures,"Figure6_IOPs_depth_dominance.png",sep=""), width = 
       text(x=28,y=-180,  labels=paste("EXP =",-round(EXP[w],2)), col="white", font=1, pos=4, cex=1.2)
       text(x=79,y=-170,  labels=expression(paste("PgC ",y^-1, sep="")), col="white", font=2, pos=2, cex=1.2)
    
-      mtext(3, at=2, line=0.5, text=nombre[w], cex=1.3, outer=F, font=1)
+      mtext(3, at=2, line=0.7, text=nombre[w], cex=1.3, outer=F, font=1)
       
-      if(w==1){mtext(3,at=-72,text="a)",cex=lettersize, outer=F, font=1)}      
-      if(w==2){mtext(3,at=-72,text="b)",cex=lettersize, outer=F, font=1) }  
+      if(w==1){mtext(3,at=-70,line=0.5,text="a)",cex=lettersize, outer=F, font=1)}      
+      if(w==2){mtext(3,at=-70,line=0.5,text="b)",cex=lettersize, outer=F, font=1) }  
       }
     
     # SCALE
-    par(mar=c(2,0.5,1,3))
+    par(mar=c(2.5,0.5,1,3))
     escala <- matrix(c(1:100), ncol=100, byrow=TRUE)
     image(escala, las=1,col=viridis(100), xaxt="n", yaxt="n", bty="n", main=expression(paste("mg ",m^-3, sep="")), cex.main=1.0)  
     axis(4,at=seq(0-0.001,1+0.001,length=6),labels=c(seq(0,1.0,length=6)[-6],">1"), las=1,cex.axis=1.2)      
@@ -92,7 +92,7 @@ png(file=paste(path_figures,"Figure6_IOPs_depth_dominance.png",sep=""), width = 
     
 ## Constituents
 ##################    
-    par(mar=c(2,2,1,1))
+    par(mar=c(2.5,2,1,1))
     for (w in 1:length(modelnames)){    
       modelname<-modelnames[w]
       zeu <- apply(ZEU[,,,w], MARGIN=c(2), FUN=mean,na.rm=TRUE)   
@@ -123,24 +123,24 @@ png(file=paste(path_figures,"Figure6_IOPs_depth_dominance.png",sep=""), width = 
           axis(1, at=seq(-80,80,by=20), labels=seq(-80,80,by=20), las=1)
           points(x=latitude_zeu, y=zeu, col="black", type="l", lty=1, lwd=2)
           text(x=75,y=-165,labels=expression(a[PH]("450nm")), font=2, cex=1.4, col="white", pos=2)
-          if(w==1){mtext(3,at=-72,text="c)",cex=lettersize, outer=F, font=1) }      
-          if(w==2){mtext(3,at=-72,text="d)",cex=lettersize, outer=F, font=1) }  
+          if(w==1){mtext(3,at=-70,line=0.5,text="c)",cex=lettersize, outer=F, font=1) }      
+          if(w==2){mtext(3,at=-70,line=0.5,text="d)",cex=lettersize, outer=F, font=1) }  
           
       # aCDOM    
       image2D(x=latitudC, y=depthC, z=matrizB, col=custom_scale, ylim=c(-200.0,0), xlim=c(-82,80),main="", las=1, zlim=c(0,0.05), colkey=F, xaxt="n")
           axis(1, at=seq(-80,80,by=20), labels=seq(-80,80,by=20), las=1)
           points(x=latitude_zeu, y=zeu, col="black", type="l", lty=1, lwd=2)
           text(x=75,y=-165,labels=expression(a[CDOM]("450nm")), font=2, cex=1.4, pos=2)
-          if(w==1){mtext(3,at=-72,text="e)",cex=lettersize, outer=F, font=1) }      
-          if(w==2){mtext(3,at=-72,text="f)",cex=lettersize, outer=F, font=1) }
+          if(w==1){mtext(3,at=-70,line=0.5,text="e)",cex=lettersize, outer=F, font=1) }      
+          if(w==2){mtext(3,at=-70,line=0.5,text="f)",cex=lettersize, outer=F, font=1) }
             
       # aNAP
       image2D(x=latitudC, y=depthC, z=matrizC, col=custom_scale, ylim=c(-200.0,0), xlim=c(-82,80), main="", las=1, zlim=c(0,0.01), colkey=F,xaxt="n")
           axis(1, at=seq(-80,80,by=20), labels=seq(-80,80,by=20), las=1)
           points(x=latitude_zeu, y=zeu, col="black", type="l", lty=1, lwd=2)
           text(x=75,y=-165,labels=expression(a[NAP]("450nm")), font=2, cex=1.4, col="black", pos=2)
-          if(w==1){mtext(3,at=-72,text="g)",cex=lettersize, outer=F, font=1) }      
-          if(w==2){mtext(3,at=-72,text="h)",cex=lettersize, outer=F, font=1) }
+          if(w==1){mtext(3,at=-70,line=0.5,text="g)",cex=lettersize, outer=F, font=1) }      
+          if(w==2){mtext(3,at=-70,line=0.5,text="h)",cex=lettersize, outer=F, font=1) }
             
       # Dominance Absorption 
       matrizW <- matrizW/matrizT
@@ -161,20 +161,20 @@ png(file=paste(path_figures,"Figure6_IOPs_depth_dominance.png",sep=""), width = 
               col=paleta[c(1,3,2,4)],ylim=c(-200.0,0), main="", las=1,colkey =F, xlim=c(-82,80),xaxt="n")
               axis(1, at=seq(-80,80,by=20), labels=seq(-80,80,by=20), las=1)
               points(x=latitude_zeu, y=zeu, col="black", type="l", lty=1, lwd=2)
-              if(w==1){mtext(3,at=-72,text="i)",cex=lettersize, outer=F, font=1) }      
-              if(w==2){mtext(3,at=-72,text="j)",cex=lettersize, outer=F, font=1) } 
+              if(w==1){mtext(3,at=-70,line=0.5,text="i)",cex=lettersize, outer=F, font=1) }      
+              if(w==2){mtext(3,at=-70,line=0.5,text="j)",cex=lettersize, outer=F, font=1) } 
     } # end loop w
 ##################       
     
     ### SCALE
-    par(mar=c(2,0.5,1,3))
+    par(mar=c(2.5,0.5,1,3))
     mat <- matrix(c(1:length(custom_scale)), ncol=length(custom_scale))
-    image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=1.2) 
-      axis(4,at=seq(0-0.05,1+0.05, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.01,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)    
     image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=1.2) 
       axis(4,at=seq(0-0.05,1+0.05, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.05,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)    
     image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=1.2) 
-      axis(4,at=seq(0-0.05,1+0.05, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.05,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)
+      axis(4,at=seq(0-0.05,1+0.05, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.05,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)    
+    image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=1.2) 
+      axis(4,at=seq(0-0.05,1+0.05, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.01,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)
     mat <- matrix(c(1:4), ncol=4)
     paleta<-wes_palette(4, name = "Zissou1", type = "continuous")
     image(mat, col=paleta, las=1, xaxt="n", yaxt="n", main="", cex.main=1.2) 
@@ -186,3 +186,109 @@ png(file=paste(path_figures,"Figure6_IOPs_depth_dominance.png",sep=""), width = 
     mtext(2,at=0.5,line=1,outer=T,text="depth (m)")  
 
 dev.off()      
+
+
+
+
+
+
+
+
+####################
+## FIGURE S9 Absorption of constituents in depth
+####################
+
+myfunc <- function(x){
+  if (sum(is.na(x))!=0){ return(NA)}
+  else {return(as.numeric(unlist(which(x==max(x, na.rm=TRUE)))))}}
+
+modelnames<-experimentos$name[c(30,32)]
+ruta<-experimentos$path[c(30,32)]        
+nombre <- c(expression(paste("EXP-noPPC: ",{{"a*"}}[NAP],"(", lambda, ") & ",{{"b*"}}[NAP],"(", lambda, ")"," [", m^2," ",mmolC^-1,"]",sep="")),
+            expression(paste("EXP-D: ",{{"a*"}}[NAP],"(", lambda, ") & ",{{"b*"}}[NAP],"(", lambda, ")"," [", m^2," ",particle^-1,"]",sep="")))     
+
+
+png(file=paste(path_figures,"FigureS9_aNAP_bNAP_depth.png",sep=""), width = 1200, height = 450, pointsize = 18,units = "px",bg = "white") 
+layout(matrix(c(1:6),ncol=3, byrow=FALSE),widths=c(1,1,0.18))
+par(mar=c(2.5,2,1,1))
+par(oma=c(2,3,2.5,2))
+lettersize=1.8
+textinner=1.2
+layout.show(n=6)
+
+## Constituents
+##################    
+par(mar=c(2.5,2,1,1))
+for (w in 1:length(modelnames)){    
+  modelname<-modelnames[w]
+  #zeu <- apply(ZEU[,,,w], MARGIN=c(2), FUN=mean,na.rm=TRUE)   
+  #latitude_zeu <- latitude    
+  
+  ## ABSORPTION
+  load(paste(o_dir,"interpolated/2iop_abpar_wb/",modelname,"_450.RData",sep=""))
+  abparave <- res
+  ## SCATTERING
+  load(paste(o_dir,"interpolated/2iop_btpar_wb/",modelname,"_450.RData",sep=""))
+  btparave <- res
+  
+  matrizC <- apply(abparave, MARGIN=c("y","z"), mean, na.rm=TRUE)
+  matrizD <- apply(btparave, MARGIN=c("y","z"), mean, na.rm=TRUE)
+  depthC   <- as.numeric(colnames(matrizC))
+  latitudC <- as.numeric(rownames(matrizC))
+
+  # aNAP
+  image2D(x=latitudC, y=depthC, z=matrizC, col=custom_scale, ylim=c(-200.0,0), xlim=c(-82,80), main="", las=1, zlim=c(0,0.01), colkey=F,xaxt="n")
+  axis(1, at=seq(-80,80,by=20), labels=seq(-80,80,by=20), las=1)
+  #points(x=latitude_zeu, y=zeu, col="black", type="l", lty=1, lwd=2)
+  text(x=75,y=-165,labels=expression(a[NAP]("450nm")), font=2, cex=1.4, col="black", pos=2)
+  if(w==1){mtext(3,at=-70,line=0.5,text="a)",cex=lettersize, outer=F, font=1) }      
+  if(w==2){mtext(3,at=-70,line=0.5,text="c)",cex=lettersize, outer=F, font=1) }
+                  if(w==1){EXP1a<-matrizC}      
+                  if(w==2){EXPDa<-matrizC}
+  # bNAP
+  image2D(x=latitudC, y=depthC, z=matrizD, col=custom_scale, ylim=c(-200.0,0), xlim=c(-82,80), main="", las=1, zlim=c(0,0.2), colkey=F,xaxt="n")
+  axis(1, at=seq(-80,80,by=20), labels=seq(-80,80,by=20), las=1)
+  #points(x=latitude_zeu, y=zeu, col="black", type="l", lty=1, lwd=2)
+  text(x=75,y=-165,labels=expression(b[NAP]("450nm")), font=2, cex=1.4, col="black", pos=2)
+  if(w==1){mtext(3,at=-70,line=0.5,text="b)",cex=lettersize, outer=F, font=1) }      
+  if(w==2){mtext(3,at=-70,line=0.5,text="d)",cex=lettersize, outer=F, font=1) }
+                  if(w==1){EXP1b<-matrizD}      
+                  if(w==2){EXPDb<-matrizD}   
+} # end loop w
+##################       
+EXP1a[EXP1a<1e-10]<-0
+EXPDa[EXPDa<1e-10]<-0
+range(EXPDa-EXP1a,na.rm=T)
+mean(EXPDa-EXP1a,na.rm=T)
+mean((EXPDa-EXP1a)/EXP1a,na.rm=T)
+
+range(EXPDb-EXP1b,na.rm=T)
+mean(EXPDb-EXP1b,na.rm=T)
+mean((EXPDb-EXP1b)/EXP1b,na.rm=T)
+
+
+### SCALE
+par(mar=c(2.5,0.5,1,3))
+mat <- matrix(c(1:length(custom_scale)), ncol=length(custom_scale))
+image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=1.2) 
+axis(4,at=seq(0-0.055,1+0.055, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.01,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)    
+
+image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=1.2) 
+axis(4,at=seq(0-0.055,1+0.055, length=11)[seq(1,11,by=2)],labels=round(seq(0,0.2,length=11),3)[seq(1,11,by=2)], cex.axis=1.2, las=1)
+
+##################    
+## Labels
+mtext(1,at=c(0.24,0.70),line=1,outer=T,text=expression(paste(degree,"N",sep="")))
+mtext(2,at=0.5,line=1,outer=T,text="depth (m)")  
+
+mtext(3, at=c(0.265,0.72), line=0.1, text=nombre, cex=1.0, outer=T, font=1)
+
+dev.off()      
+
+
+
+
+
+
+
+

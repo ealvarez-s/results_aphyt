@@ -1,5 +1,5 @@
-source("00_Summary_EDITME.R")
-source("functions_misc.R")
+source("Scripts/00_Summary_EDITME.R")
+source("Scripts/functions_misc.R")
 
 ###############################################################
 ### COMPARE SPECTRAL SHAPES Rrs MODEL vs SATELLITE/OBSERVATIONS
@@ -64,10 +64,10 @@ source("functions_misc.R")
             
 
 ############    
-## FIGURE 11 RRS(lambda) by TChla concentration
+## FIGURE 10 RRS(lambda) by TChla concentration
 ############    
             
-png(file=paste(path_figures,"Figure11_Reflectance_spectra_lambda.png",sep=""), width = 1200, height = 360, units = "px", pointsize = 18,bg = "white")
+png(file=paste(path_figures,"Figure10_Reflectance_spectra_lambda.png",sep=""), width = 1200, height = 360, units = "px", pointsize = 18,bg = "white")
         par(mfrow=c(1,4))
         par(mar=c(4,3,1,1))
         par(oma=c(2,3,2,0))
@@ -208,10 +208,10 @@ png(file=paste(path_figures,"Figure11_Reflectance_spectra_lambda.png",sep=""), w
   
   
 #############  
-### FIGURE 12: Spectral shape by Biomes for both mod and sat/obs
+### FIGURE 11: Spectral shape by Biomes for both mod and sat/obs
 #############  
  
-png(file=paste(path_figures,"Figure12_Reflectance_spectral_shape_biomes.png",sep=""), width=1000, height=660, units="px", pointsize=18,bg="white")    
+png(file=paste(path_figures,"Figure11_Reflectance_spectral_shape_biomes.png",sep=""), width=1000, height=660, units="px", pointsize=18,bg="white")    
 
       layout(matrix(c(1,5,9,12,15,
                       2,6,10,13,16,

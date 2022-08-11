@@ -1,5 +1,5 @@
-source("00_Summary_EDITME.R")
-source("functions_misc.R")
+source("Scripts/00_Summary_EDITME.R")
+source("Scripts/functions_misc.R")
 
 ########################################################
 ### Interpolate SURFACE variables from model output  ###
@@ -17,9 +17,10 @@ source("functions_misc.R")
     # List of simulations
     experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
     modelnames<-experimentos$name[c(9:29)]
+    modelnames<-experimentos$name[c(32)]
     ruta<-o_dir
     ##  experimentos$name[c(30,31)] are identical to experimentos$name[c(21,9)], just run in another machine (GALILEO vs G100)
-    
+    ##  experimentos$name[c(32)] is identical to experimentos$name[c(21,30)] (CALC_APHYT=F), with the optical properties of NAP taken in m2 particle-1 (CALC_APART=F) # review R1 (2022-06-30)  
     
 #################
 ## REFLECTANCE ##

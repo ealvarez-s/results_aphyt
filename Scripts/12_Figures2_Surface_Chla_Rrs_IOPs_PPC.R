@@ -1,5 +1,5 @@
-source("00_Summary_EDITME.R")
-source("functions_misc.R")
+source("Scripts/00_Summary_EDITME.R")
+source("Scripts/functions_misc.R")
 
 #######################         
 #### FIGURES in SURFACE constant vs variable
@@ -17,15 +17,15 @@ is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
 
          modelnames<-experimentos$name[c(21,9)]
          ruta<-experimentos$path[c(21,9)]        
-         nombre <- c(expression(paste("EXP-1: ",{{"a*"}}[PH],"(", lambda, ") constant",sep="")),
-                     expression(paste("EXP-2: ",{{"a*"}}[PH],"(", lambda, ") variable",sep="")))
+         nombre <- c(expression(paste("EXP-noPPC: ",{{"a*"}}[PH],"(", lambda, ") constant",sep="")),
+                     expression(paste("EXP-PPC: ",{{"a*"}}[PH],"(", lambda, ") variable",sep="")))
 
          ## Color palette
          mycol1<-usecol(pal_bordeaux,n=4)
          mycol2<-usecol(pal_petrol,n=4)
          colores_puntos<-c(mycol1[3],mycol2[3])
          colores<-c(mycol1[1],mycol2[1])
-         custom_scale <- wes_palette(length(custom_scale),name = "Zissou1", type = "continuous")
+         #custom_scale <- wes_palette(length(custom_scale),name = "Zissou1", type = "continuous")
          custom_scale <- c("deepskyblue4","deepskyblue3","darkslategray1","mediumaquamarine","greenyellow","yellow",
                            "gold1","orange", "tomato","orangered2")         
          
@@ -425,9 +425,9 @@ n_ppc<-c(NA,NA)
            mod <- res
            z <- mod[,,12]
            if (w==1) {image2D(x=longitude, y=latitude, mod[,,1],  col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n", colkey=FALSE,
-                   main=expression(paste(R[RS], " (400nm) ",italic("EXP-1"), sep="")))}else{
+                   main=expression(paste(R[RS], " (400nm) ",italic("EXP-noPPC"), sep="")))}else{
                      image2D(x=longitude, y=latitude, mod[,,1],  col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n", colkey=FALSE,
-                             main=expression(paste(R[RS], " (400nm) ",italic("EXP-2"), sep=""))) }
+                             main=expression(paste(R[RS], " (400nm) ",italic("EXP-PPC"), sep=""))) }
                    # Correlation Insitu 400 vs 400
                    x<-cbind(c(mod[,,1]), c(matriz_annual[,,1]))
                    x[x=="-Inf"] <- NA
@@ -452,9 +452,9 @@ n_ppc<-c(NA,NA)
                         if (w==2){mtext(3,text="s)",at=-175,cex=lettersize, font=2)}  
            
         if (w==1) {image2D(x=longitude, y=latitude,mod[,,3],  col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n",colkey=FALSE,
-                   main=expression(paste(R[RS], " (450nm) ",italic("EXP-1"), sep="")))}else{
+                   main=expression(paste(R[RS], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                    image2D(x=longitude, y=latitude,mod[,,3],  col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n",colkey=FALSE,
-                   main=expression(paste(R[RS], " (450nm) ",italic("EXP-2"), sep="")))}
+                   main=expression(paste(R[RS], " (450nm) ",italic("EXP-PPC"), sep="")))}
                    # Correlation Insitu 450 vs 450
                    x<-cbind(c(mod[,,3]), c(matriz_annual[,,3]))
                    x[x=="-Inf"] <- NA
@@ -478,9 +478,9 @@ n_ppc<-c(NA,NA)
                          if (w==2){mtext(3,text="t)",at=-175,cex=lettersize, font=2)}                          
                  
          if (w==1) {image2D(x=longitude, y=latitude,mod[,,4],  col=custom_scale, zlim=c(0,0.015), las=1, xaxt="n", yaxt="n",colkey=FALSE,
-                   main=expression(paste(R[RS], " (475nm) ",italic("EXP-1"), sep=""))) }else{ 
+                   main=expression(paste(R[RS], " (475nm) ",italic("EXP-noPPC"), sep=""))) }else{ 
                    image2D(x=longitude, y=latitude,mod[,,4],  col=custom_scale, zlim=c(0,0.015), las=1, xaxt="n", yaxt="n",colkey=FALSE,
-                   main=expression(paste(R[RS], " (475nm) ",italic("EXP-2"), sep=""))) }
+                   main=expression(paste(R[RS], " (475nm) ",italic("EXP-PPC"), sep=""))) }
                    # Correlation Insitu 475 vs 475
                    x<-cbind(c(mod[,,4]), c(matriz_annual[,,4]))
                    x[x=="-Inf"] <- NA
@@ -502,9 +502,9 @@ n_ppc<-c(NA,NA)
                          if (w==2){mtext(3,text="u)",at=-175,cex=lettersize, font=2)}                   
                  
         if (w==1) {image2D(x=longitude, y=latitude,mod[,,5],  col=custom_scale, zlim=c(0,0.010), las=1, xaxt="n", yaxt="n", colkey=FALSE,
-                   main=expression(paste(R[RS], " (500nm) ",italic("EXP-1"), sep="")))}else{
+                   main=expression(paste(R[RS], " (500nm) ",italic("EXP-noPPC"), sep="")))}else{
                    image2D(x=longitude, y=latitude,mod[,,5],  col=custom_scale, zlim=c(0,0.010), las=1, xaxt="n", yaxt="n", colkey=FALSE,
-                   main=expression(paste(R[RS], " (500nm) ",italic("EXP-2"), sep="")))}
+                   main=expression(paste(R[RS], " (500nm) ",italic("EXP-PPC"), sep="")))}
                    # Correlation Insitu 500 vs 500
                    x<-cbind(c(mod[,,5]), c(matriz_annual[,,5]))
                    x[x=="-Inf"] <- NA
@@ -527,9 +527,9 @@ n_ppc<-c(NA,NA)
                  
            
         if (w==1) {image2D(x=longitude, y=latitude,mod[,,7],  col=custom_scale, zlim=c(0,0.005), las=1, xaxt="n", yaxt="n",colkey=FALSE,
-                   main=expression(paste(R[RS], " (550nm) ",italic("EXP-1"), sep="")))}else{
+                   main=expression(paste(R[RS], " (550nm) ",italic("EXP-noPPC"), sep="")))}else{
                    image2D(x=longitude, y=latitude,mod[,,7],  col=custom_scale, zlim=c(0,0.005), las=1, xaxt="n", yaxt="n",colkey=FALSE,
-                   main=expression(paste(R[RS], " (550nm) ",italic("EXP-2"), sep="")))}
+                   main=expression(paste(R[RS], " (550nm) ",italic("EXP-PPC"), sep="")))}
                    # Correlation Insitu 550 vs 550
                    x<-cbind(c(mod[,,7]), c(matriz_annual[,,7]))
                    x[x=="-Inf"] <- NA
@@ -551,9 +551,9 @@ n_ppc<-c(NA,NA)
                            if (w==2){mtext(3,text="w)",at=-175,cex=lettersize, font=2)}                     
                    
         if (w==1) {image2D(x=longitude, y=latitude,mod[,,12],  col=custom_scale, zlim=c(0,0.001), las=1, xaxt="n", yaxt="n", colkey=FALSE,
-                   main=expression(paste(R[RS], " (675nm) ",italic("EXP-1"), sep="")))}else{
+                   main=expression(paste(R[RS], " (675nm) ",italic("EXP-noPPC"), sep="")))}else{
                    image2D(x=longitude, y=latitude,mod[,,12],  col=custom_scale, zlim=c(0,0.001), las=1, xaxt="n", yaxt="n", colkey=FALSE,
-                   main=expression(paste(R[RS], " (675nm) ",italic("EXP-2"), sep="")))}
+                   main=expression(paste(R[RS], " (675nm) ",italic("EXP-PPC"), sep="")))}
                    # Correlation Insitu 675 vs 675
                    x<-cbind(c(mod[,,12]), c(matriz_annual[,,12]))
                    x[x=="-Inf"] <- NA
@@ -615,6 +615,7 @@ n_ppc<-c(NA,NA)
            par(oma=c(2,2,2,1))
            layout.show(n=30)
            textinner=1.2
+           lettersize=1.2
 ############################         
          
 #### Atot
@@ -653,9 +654,9 @@ n_ppc<-c(NA,NA)
              z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
              z[z<0.01] <- NA
            if (w==1){ image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.2), las=1, xaxt="n", yaxt="n",colkey=F,
-                      main=expression(paste(a[TOT], " (400nm) ",italic("EXP-1"), sep="")))}else{
+                      main=expression(paste(a[TOT], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                       image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.2), las=1, xaxt="n", yaxt="n",colkey=F,
-                      main=expression(paste(a[TOT], " (400nm) ",italic("EXP-2"), sep="")))}
+                      main=expression(paste(a[TOT], " (450nm) ",italic("EXP-PPC"), sep="")))}
                    # Correlation
                    x<-cbind(c(z), c(media))
                    x[x=="-Inf"] <- NA
@@ -723,9 +724,9 @@ n_ppc<-c(NA,NA)
              z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
              z[z<1e-5] <- NA
            if (w==1){ image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                      main=expression(paste(a[PH], " (450nm) ",italic("EXP-1"), sep="")))}else{
+                      main=expression(paste(a[PH], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                       image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                      main=expression(paste(a[PH], " (450nm) ",italic("EXP-2"), sep="")))}            
+                      main=expression(paste(a[PH], " (450nm) ",italic("EXP-PPC"), sep="")))}            
                      # Correlation Insitu 450 vs 450
                      x<-cbind(c(z), c(matriz_annual[,,1,3]))
                      x[x=="-Inf"] <- NA
@@ -780,9 +781,9 @@ n_ppc<-c(NA,NA)
              z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
              z[z<1e-5] <- NA
              if (w==1){image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.03), las=1, xaxt="n", yaxt="n",colkey=F,
-                       main=expression(paste(a[NAP], " (450nm) ",italic("EXP-1"), sep="")))}else{
+                       main=expression(paste(a[NAP], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                        image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.03), las=1, xaxt="n", yaxt="n",colkey=F,
-                       main=expression(paste(a[NAP], " (450nm) ",italic("EXP-2"), sep="")))}        
+                       main=expression(paste(a[NAP], " (450nm) ",italic("EXP-PPC"), sep="")))}        
                      # Correlation Insitu 450 vs 450
                      x<-cbind(c(z), c(matriz_annual[,,1,3]))
                      x[x=="-Inf"] <- NA
@@ -830,9 +831,9 @@ n_ppc<-c(NA,NA)
              z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
              z[z<1e-5] <- NA
            if (w==1){image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                     main=expression(paste(a[P], " (450nm) ",italic("EXP-1"), sep="")))}else{
+                     main=expression(paste(a[P], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                      image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                     main=expression(paste(a[P], " (450nm) ",italic("EXP-2"), sep="")))}        
+                     main=expression(paste(a[P], " (450nm) ",italic("EXP-PPC"), sep="")))}        
                      # Correlation Insitu 450 vs 450
                      x<-cbind(c(z), c(matriz_annual[,,1,3]))
                      x[x=="-Inf"] <- NA
@@ -880,9 +881,9 @@ n_ppc<-c(NA,NA)
              z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
              z[z<1e-5] <- NA
         if (w==1){   image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                     main=expression(paste(a[CDOM], " (450nm) ",italic("EXP-1"), sep="")))}else{
+                     main=expression(paste(a[CDOM], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                      image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                     main=expression(paste(a[CDOM], " (450nm) ",italic("EXP-2"), sep="")))}                
+                     main=expression(paste(a[CDOM], " (450nm) ",italic("EXP-PPC"), sep="")))}                
                      # Correlation Insitu 450 vs 450
                      x<-cbind(c(z), c(matriz_annual[,,1,3]))
                      x[x=="-Inf"] <- NA
@@ -940,9 +941,9 @@ n_ppc<-c(NA,NA)
                z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
                z[z<1e-5] <- NA
           if (w==1){   image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                       main=expression(paste(a[DG], " (450nm) ",italic("EXP-1"), sep="")))}else{
+                       main=expression(paste(a[DG], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
                        image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
-                       main=expression(paste(a[DG], " (450nm) ",italic("EXP-2"), sep="")))}   
+                       main=expression(paste(a[DG], " (450nm) ",italic("EXP-PPC"), sep="")))}   
                        # Correlation
                        x<-cbind(c(z), c(media))
                        x[x=="-Inf"] <- NA
@@ -973,10 +974,258 @@ n_ppc<-c(NA,NA)
      
      
      
+     
+     
+     
+     modelnames<-experimentos$name[c(30,32)]
+     ruta<-experimentos$path[c(30,32)]        
+     nombre <- c(expression(paste("EXP-noPPC: ",{{"a*"}}[NAP],"(", lambda, ") [", m^-2," ",mmolC^-1,"]",sep="")),
+                 expression(paste("EXP-D: ",{{"a*"}}[NAP],"(", lambda, ") [", m^-2," ",particle^-1,"]",sep="")))     
+     
+     
+#############################
+#### FIGURE S8: aNAP surface ( review R1 (2022-06-30) )
+############################# 
+     
+     png(file=paste(path_figures,"FigureS8_Anap_corr.png",sep=""),width = 1200, height = 900, units = "px", pointsize = 20, bg = "white")  
+     layout(matrix(c(1:16),ncol=4,byrow=T),widths=c(rep(1,3),0.25))
+     par(mar=c(1,0.5,1,0))
+     par(oma=c(2,2,2,1))
+     layout.show(n=16)
+     textinner=1.2
+     lettersize=1.2
+     ############################         
+     
+     #### Atot
+     ###########################           
+
+     #### Sat
+     modelname<-modelnames[1]
+     load(paste(p_dir,"2iop_atot/",modelname,".RData",sep=""))
+     z <- apply(res,MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
+     z[z<0.01] <- NA
+     MASCARA <- z
+     load(paste(s_dir,"climatologies_2012_2018/media_seasonal_Atot_2deg_OCCCI_2012_2018.RData",sep=""))
+     res <- med           
+     landa_sat <- dimnames(res)$l
+     longitude<-as.numeric(dimnames(res)$x)
+     latitude<-as.numeric(dimnames(res)$y)
+     sat <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)        
+     media <- sat[,,2]
+     media[is.na(z)] <- NA
+     image2D(x=longitude, y=latitude,media, col=custom_scale, zlim=c(0,0.2), las=1, xaxt="n", yaxt="n",colkey=F,
+             main=expression(paste(a[TOT], " (443nm) ",italic("OC-CCI"), sep="")))
+     # Map
+     load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+     contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+     axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
+     axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
+     mtext(3,text="a)",at=-175,cex=lettersize, font=2)  
+     text(x=75,y=-76,labels="n = 9466", font=2, cex=1.1)
+     
+     # Mod  
+     for (w in 1:length(modelnames)){ 
+       modelname<-modelnames[w]
+       load(paste(p_dir,"2iop_atot/",modelname,".RData",sep=""))
+       z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
+       z[z<0.01] <- NA
+       if (w==1){ image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.2), las=1, xaxt="n", yaxt="n",colkey=F,
+                          main=expression(paste(a[TOT], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
+                            image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.2), las=1, xaxt="n", yaxt="n",colkey=F,
+                                    main=expression(paste(a[TOT], " (450nm) ",italic("EXP-D"), sep="")))}
+       # Correlation
+       x<-cbind(c(z), c(media))
+       x[x=="-Inf"] <- NA
+       x<-x[complete.cases(x)==TRUE,]
+       tot<- rcorr(x, type="pearson")$r[1,2]
+       text(x=75,y=-77,labels=paste("R = ",round(tot,3)), font=2, cex=textinner)
+       # Map
+       load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+       contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+       axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
+       axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
+       if (w==1){mtext(3,text="b)",at=-175,cex=lettersize, font=2)   }
+       if (w==2){mtext(3,text="c)",at=-175,cex=lettersize, font=2)   } 
+     }
+     ###########################    
+     ### ESCALA
+     par(mar=c(1,0.5,1,3))
+     mat <- matrix(c(1:length(custom_scale)), ncol=length(custom_scale))
+     image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=0.8) 
+     axis(4,at=seq(0-0.05,1+0.05, length=6),labels=round(seq(0,0.2,length=6),2), cex.axis=1.2, las=1)
+     
+     
+     #### Anap
+     par(mar=c(1,0.5,1,0))
+     ############################           
+     ##### In situ
+     is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+     load(paste(is_dir,"/media_annual_Anap.Rdata",sep=""))
+     image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, zlim=c(0,0.03), las=1, xaxt="n", yaxt="n", colkey=F,
+             main=expression(paste(a[NAP], " (450nm) ",italic("in situ"), sep="")))
+     # Map
+     load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+     contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+     axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
+     axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
+     mtext(3,text="d)",at=-175,cex=lettersize, font=2)  
+     text(x=75,y=-76,labels="n = 502", font=2, cex=1.1)
+     
+
+     # Mod  
+     for (w in 1:length(modelnames)){ 
+       modelname<-modelnames[w]
+       load(paste(p_dir,"2iop_apt/",modelname,".RData",sep=""))
+       z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
+       #z[z<1e-5] <- NA
+       z[z<0] <- 0
+       if (w==1){image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.03), las=1, xaxt="n", yaxt="n",colkey=F,
+                         main=expression(paste(a[NAP], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
+                           image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.03), las=1, xaxt="n", yaxt="n",colkey=F,
+                                   main=expression(paste(a[NAP], " (450nm) ",italic("EXP-D"), sep="")))}        
+       # Correlation Insitu 450 vs 450
+       x<-cbind(c(z), c(matriz_annual[,,1,3]))
+       x[x=="-Inf"] <- NA
+       x<-x[complete.cases(x)==TRUE,]
+       aph<- rcorr(x, type="pearson")$r[1,2  ]
+       text(x=-110,y=-77,labels=paste("R = ",round(aph,3)), font=2, cex=textinner)
+       # Map
+       load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+       contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+       axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
+       axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
+       if (w==1){mtext(3,text="e)",at=-175,cex=lettersize, font=2)   }
+       if (w==2){mtext(3,text="f)",at=-175,cex=lettersize, font=2)   }                
+     }        
+     ############################           
+     ### ESCALA
+     par(mar=c(1,0.5,1,3))
+     mat <- matrix(c(1:length(custom_scale)), ncol=length(custom_scale))
+     image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=0.8) 
+     axis(4,at=seq(0-0.05,1+0.05, length=6),labels=round(seq(0,0.03,length=6),3), cex.axis=1.2, las=1)
+     
+     
+     #### Ap
+     par(mar=c(1,0.5,1,0))
+     ############################           
+     ##### In situ
+     is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+     load(paste(is_dir,"/media_annual_Ap.Rdata",sep=""))           
+     image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n", colkey=F,
+             main=expression(paste(a[P], " (450nm) ",italic("in situ"), sep="")))
+     # Map
+     load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+     contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+     axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
+     axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
+     mtext(3,text="g)",at=-175,cex=lettersize, font=2)    
+     text(x=75,y=-76,labels="n = 622", font=2, cex=1.1)
+
+     # Mod  
+     for (w in 1:length(modelnames)){ 
+       modelname<-modelnames[w]
+       load(paste(p_dir,"2iop_app/",modelname,".RData",sep=""))
+       z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
+       z[z<1e-5] <- NA
+       if (w==1){image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
+                         main=expression(paste(a[P], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
+                           image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
+                                   main=expression(paste(a[P], " (450nm) ",italic("EXP-D"), sep="")))}        
+       # Correlation Insitu 450 vs 450
+       x<-cbind(c(z), c(matriz_annual[,,1,3]))
+       x[x=="-Inf"] <- NA
+       x<-x[complete.cases(x)==TRUE,]
+       aph<- rcorr(x, type="pearson")$r[1,2  ]
+       text(x=-110,y=-77,labels=paste("R = ",round(aph,3)), font=2, cex=textinner)
+       # Map
+       load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+       contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+       axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
+       axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
+       if (w==1){mtext(3,text="h)",at=-175,cex=lettersize, font=2)   }
+       if (w==2){mtext(3,text="i)",at=-175,cex=lettersize, font=2)   }   
+     }        
+     ############################           
+     ### ESCALA
+     par(mar=c(1,0.5,1,3))
+     mat <- matrix(c(1:length(custom_scale)), ncol=length(custom_scale))
+     image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=0.8) 
+     axis(4,at=seq(0-0.05,1+0.05, length=6),labels=round(seq(0,0.1,length=6),3), cex.axis=1.2, las=1)
+     
+
+     #### Adg
+     par(mar=c(1,0.5,1,0))
+     ############################           
+
+     # SAT
+     modelname<-modelnames[1]
+     load(paste(p_dir,"2iop_adg/",modelname,".RData",sep=""))
+     z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
+     z[z<1e-5] <- NA
+     load(paste(s_dir,"climatologies_2012_2018/media_seasonal_Adg_2deg_OCCCI_2012_2018.RData",sep=""))
+     res <- med 
+     landa_sat <- dimnames(res)$l
+     sat <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)        
+     media <- sat[,,2]
+     media[is.na(z)] <- NA
+     image2D(x=longitude, y=latitude,media, col=custom_scale, zlim=c(0,0.1), las=1,xaxt="n", yaxt="n",colkey=F,
+             main=expression(paste(a[DG], " (443nm) ",italic("OC-CCI"), sep="")))
+     # Map
+     load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+     contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+     axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
+     axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
+     mtext(3,text="j)",at=-175,cex=lettersize, font=2) 
+     text(x=75,y=-76,labels="n = 9466", font=2, cex=1.1)
+     
+     # Mod
+     for (w in 1:length(modelnames)){ 
+       modelname<-modelnames[w]
+       load(paste(p_dir,"2iop_adg/",modelname,".RData",sep=""))
+       z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
+       z[z<1e-5] <- NA
+       if (w==1){   image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
+                            main=expression(paste(a[DG], " (450nm) ",italic("EXP-noPPC"), sep="")))}else{
+                              image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
+                                      main=expression(paste(a[DG], " (450nm) ",italic("EXP-D"), sep="")))}   
+       # Correlation
+       x<-cbind(c(z), c(media))
+       x[x=="-Inf"] <- NA
+       x<-x[complete.cases(x)==TRUE,]
+       adg<- rcorr(x, type="pearson")$r[1,2]
+       text(x=75,y=-77,labels=paste("R = ",round(adg,3)), font=2, cex=textinner)
+       # Map
+       load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
+       contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
+       axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
+       axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
+       if (w==1){mtext(3,text="k)",at=-175,cex=lettersize, font=2)   }
+       if (w==2){mtext(3,text="l)",at=-175,cex=lettersize, font=2)   }  
+     }        
+     ############################ 
+     ### ESCALA
+     par(mar=c(1,0.5,1,3))
+     mat <- matrix(c(1:length(custom_scale)), ncol=length(custom_scale))
+     image(mat, col=custom_scale, las=1, xaxt="n", yaxt="n", main=expression(m^-1), cex.main=0.8) 
+     axis(4,at=seq(0-0.05,1+0.05, length=6),labels=round(seq(0,0.1,length=6),3), cex.axis=1.2, las=1)
+     
+     
+     dev.off()
+     
+     
+     
+    
+     
+     
+     modelnames<-experimentos$name[c(21,9)]
+     ruta<-experimentos$path[c(21,9)]        
+     nombre <- c(expression(paste("EXP-noPPC: ",{{"a*"}}[PH],"(", lambda, ") constant",sep="")),
+                 expression(paste("EXP-PPC: ",{{"a*"}}[PH],"(", lambda, ") variable",sep="")))
+     
  
            
 #########################################################################
-#### Taylor diagram with all output EXP-1 and EXP-2: constant vs variable
+#### Taylor diagram with all output EXP-noPPC and EXP-PPC: constant vs variable
 #########################################################################
     
 ## Compute positions first (Taylor 2001), then plot diagram 
@@ -1409,10 +1658,10 @@ n_ppc<-c(NA,NA)
   
    
 ###########################################################
-## FIGURE 4: Taylor diagrams Model vs In situ and Satellite
+## FIGURE 12: Taylor diagrams Model vs In situ and Satellite (before review was Figure 4)
 ###########################################################
 
-  png(file=paste(path_figures,"Figure4_Taylor_diagrams_split.png",sep=""),width = 1210, height = 730, units = "px", pointsize = 24, bg = "white") 
+  png(file=paste(path_figures,"Figure12_Taylor_diagrams_split.png",sep=""),width = 1210, height = 730, units = "px", pointsize = 24, bg = "white") 
     par(mfcol=c(2,3)) 
     par(family="")
     par(mar=c(5,5,2,2))  
@@ -1617,10 +1866,10 @@ dev.off()
 
 
 #########################
-#### FIGURE 5 Aph surface
+#### FIGURE 4 Aph surface
 ######################### 
 
-png(file=paste(path_figures,"Figure5_Aph_surface.png",sep=""), width = 1210, height = 730, units = "px", pointsize = 20, bg = "white")  
+png(file=paste(path_figures,"Figure4_Aph_surface.png",sep=""), width = 1210, height = 730, units = "px", pointsize = 20, bg = "white")  
         layout(matrix(c(1,2,5,3,4,5),ncol=3,byrow=T),widths=c(1,1,0.18))
         par(mar=c(2,2,3,1))
         par(oma=c(3,3,1,1))
@@ -1725,11 +1974,11 @@ dev.off()
 
 
 ###################################
-### FIGURE 7  Gradient aPH latitude
+### FIGURE 6  Gradient aPH latitude
 ###################################
 
 
-png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, height = 720, units = "px", pointsize = 18, bg = "white") 
+png(file=paste(path_figures,"Figure6_Aph_latitude2.png",sep=""), width = 1100, height = 720, units = "px", pointsize = 18, bg = "white") 
     par(mfrow=c(1,2))
     par(mar=c(2,3,1,2))
     par(oma=c(3,2,2,1))
@@ -1799,7 +2048,7 @@ png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, h
                 polygon(y=equis[!is.na(ies)], x=ies[!is.na(ies)], col=mycol[2], border=NA)
                 ies<-c(upper[1,],lower[1,][length(lower[1,]):1])
                 polygon(y=equis[!is.na(ies)], x=ies[!is.na(ies)], col=mycol[1], border=NA)
-                mtext(3,at=0.005, line=1,text="a) EXP-1",cex=lettersize, outer=F, font=1) 
+                mtext(3,at=0.005, line=1,text="a) EXP-noPPC",cex=lettersize, outer=F, font=1) 
                 
                 # Constant
                 w=1
@@ -1900,7 +2149,7 @@ png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, h
                 polygon(y=equis[!is.na(ies)], x=ies[!is.na(ies)], col=mycol[2], border=NA)
                 ies<-c(upper[1,],lower[1,][length(lower[1,]):1])
                 polygon(y=equis[!is.na(ies)], x=ies[!is.na(ies)], col=mycol[1], border=NA)
-                mtext(3,at=0.005, line=1,text="b) EXP-2",cex=lettersize, outer=F, font=1) 
+                mtext(3,at=0.005, line=1,text="b) EXP-PPC",cex=lettersize, outer=F, font=1) 
                 
                 # Variable
                 w=2
@@ -1957,10 +2206,10 @@ png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, h
 
 
 #################################################
-#### FIGURE 8: metrics aPH observed vs. simulated
+#### FIGURE 7: metrics aPH observed vs. simulated
 #################################################         
 
-png(file=paste(path_figures,"Figure8_aph_metrics.png",sep=""), width = 900, height = 1100, units = "px", pointsize = 18, bg = "white") 
+png(file=paste(path_figures,"Figure7_aph_metrics.png",sep=""), width = 900, height = 1100, units = "px", pointsize = 18, bg = "white") 
      
       layout(matrix(c(2,1,9,4,3,10,6,5,11,8,7,12),ncol=3, byrow=TRUE), widths = c(0.4,1,1))
       par(family="")

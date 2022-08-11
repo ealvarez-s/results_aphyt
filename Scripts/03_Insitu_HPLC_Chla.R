@@ -42,6 +42,8 @@ astrid<-read.csv(paste(p_dir,"TOTAL_Astrid6_hplc.csv", sep=""))
 nombres_astrid<-names(astrid)[c(3,9,16,11:13,18,19,24,28,31,37,51,54:56,53,58)]
 astrid2<-astrid[,c(3,9,16,11:13,18,19,24,28,31,37,51,54:56,53,58)] 
 #dim(astrid2)
+colnames(astrid2)
+sum(complete.cases(astrid2[,c(9,13)])) 
 
 # Tabla datos CSIRO
 csiro<-read.csv(paste(p_dir,"TOTAL_CSIRO_hplc.csv", sep=""))    
@@ -49,6 +51,8 @@ csiro<-read.csv(paste(p_dir,"TOTAL_CSIRO_hplc.csv", sep=""))
 nombres_csiro<-names(csiro)[c(3,9:13,15,16,21,25,28,34,48,51:53,50,55)]    
 csiro2<-csiro[,c(3,9:13,15,16,21,25,28,34,48,51:53,50,55)]  
 #dim(csiro2)
+colnames(csiro2)
+sum(complete.cases(csiro2[,c(9,13)])) 
 
 # Tabla datos Chase
 chase<-read.csv(paste(p_dir,"TOTAL_Chase_hplc.csv", sep=""))
@@ -168,6 +172,10 @@ experimentos<-rbind(astrid2, csiro2)
 # Tabla datos MAREDAT
 experimentos<-read.csv(paste(p_dir,"pigments_MAREDAT_and_Claustre_quality_controled.csv", sep=""))
 #names(experimentos)
+        #dim(experimentos)
+        colnames(experimentos)
+        sum(complete.cases(experimentos[,c(19,62)]))         
+        
         cruise <- experimentos$Cruise_des
         lati<-experimentos$lat   # plot(long, lati)
         long<-experimentos$lon

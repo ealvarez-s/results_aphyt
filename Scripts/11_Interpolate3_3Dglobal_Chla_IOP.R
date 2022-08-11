@@ -1,5 +1,5 @@
-source("00_Summary_EDITME.R")
-source("functions_misc.R")
+source("Scripts/00_Summary_EDITME.R")
+source("Scripts/functions_misc.R")
 
 ######################################################
 ## Interpolate GLOBAL 3D fields from model output  ###
@@ -310,6 +310,10 @@ path_figures<-paste(global_path,"Figures/",sep="")
     
     modelnames<-experimentos$name[c(21,9)]
     ruta<-o_dir  
+    
+    #modelnames<-experimentos$name[c(32)]  # review R1
+    #ruta<-o_dir     
+    
     
     for (g in 1:length(modelnames)){
         modelname<-modelnames[g]
