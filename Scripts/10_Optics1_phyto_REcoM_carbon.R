@@ -1,6 +1,5 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-library(unikn) 
-library(wesanderson)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ###################################################
 ### INITIAL OPTICAL PROPERTIES for Constituents ###                                                  
@@ -13,8 +12,7 @@ library(wesanderson)
 
 
 paleta<-wes_palette(3, name = "Chevalier1", type = "continuous")
-path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="") 
-
+path_figures<-paste(global_path,"Figures/",sep="")
 
       nombres <-c("Prochlorococcus", "Synechococcus", "Small Eukaryotes", "Green algae", "Cocolithophorids",    "Brown algae", "Diatoms")  
       clusters<-c("Prochlorococcus", "Synechococcus", "SmallEuk",         "Chloro",      "Emiliania",           "Brown",       "Diatoms")      
@@ -32,10 +30,10 @@ path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2
 ################################################################################
 ### Average Chla-specific aPH (m2 mgChla-1) and reconstruct aPS (m2 mmolC-1) ###
 ################################################################################
+p_dir<-paste(global_path,"Phyto_optics/",sep="")  
       
       ### ABSORPTION
-      dir<-"/Users/ealvarez/Datos/Dat_Aph/"
-      datos<-read.csv(paste(dir,"csvs/absorption_spectra.csv", sep=""), sep=";")
+      datos<-read.csv(paste(p_dir,"absorption_spectra7.csv", sep=""), sep=";")
       datos<-datos[datos$FLAG_1==0,]
       datos<-datos[datos$FLAG_2==0,]
       datos<-datos[!is.na(datos[,52]),]
@@ -47,7 +45,7 @@ path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2
       ### SPECTRA RECONSTRUCTION   
       ## Weight-specific absorption coefficients for pigments downloaded from:
       ## http://www.oceanopticsbook.info/view/optical_constituents_of_the_ocean/_phytoplankton
-      espectros<-read.csv(paste(dir,"Bidigare_et_al_1990.csv",sep=""))
+      espectros<-read.csv(paste(p_dir,"Bidigare_et_al_1990.csv",sep=""))
       lambda_bidigare<-espectros$lAMBDA
       spectra_reconstruction<-function(x,P1="CHLA",P2="PEB",P3="PSC",P4="PPC"){
         fila<-unlist(x)
@@ -131,9 +129,8 @@ path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2
 ##########################################################
 ### Average mass-specific b (m2 mgC-1) to (m2 mmolC-1) ###
 ##########################################################
-     
-     dir<-"/Users/ealvarez/Datos/Dat_Aph/"
-     spectra<-read.csv(paste(dir,"csvs/scatter_mass_Dut2015.csv",sep=""), sep=";")
+
+     spectra<-read.csv(paste(p_dir,"scatter_mass_Dut2015.csv",sep=""), sep=";")
      #names(spectra)
       # Agregar por grupo
       resultado_bph  <- rbind(spectra$Small_B,  spectra$Diatom_B)
@@ -153,7 +150,7 @@ path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2
   lambda_extremos<-sort(unique(c(modelo_lambda[-length(modelo_lambda)]+(diff(modelo_lambda)/2),400,700)))
   
       # Datos
-      lambdas_out
+      #lambdas_out
       datos11<-colMeans(resultado_aph[1:6,],na.rm=T)
       datos21<-resultado_aph[7,]
       datos12<-colMeans(resultado_aps[1:6,],na.rm=T)
@@ -193,8 +190,7 @@ path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2
                             format(round(datos24,9), nsmall = 9))    
 
       # SAVE phyto_optics.dat file
-      pdir<-"/Users/ealvarez/Datos/Res_C20_radtrans/"
-      sink(paste(pdir,"phyto_optics/optics_phyto_recom_carbon.dat",sep=""))
+      sink(paste(p_dir,"optics_phyto_recom_carbon.dat",sep=""))
       # HEADER
       cat("Computed in 10_Optics1_phyto_REcoM_carbon.R\n")
       cat("# aPH compiled from literature (absorption_spectra.csv) (m2 mgChla-1)\n")    
@@ -204,18 +200,18 @@ path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2
       cat("Format I4,3F10.4,F20.14\n")
       
       cat("*** Others ***\n")    
-      write.table(datosothers, file=paste(pdir,"phyto_optics/optics_phyto_recom_carbon.dat",sep=""),
+      write.table(datosothers, file=paste(p_dir,"optics_phyto_recom_carbon.dat",sep=""),
                   sep = "    ", row.names = FALSE, col.names = FALSE, quote = FALSE, append=TRUE)
       #sep = "\t"
-      cat("*** Diatom ***\n",file=paste(pdir,"phyto_optics/optics_phyto_recom_carbon.dat",sep=""), append = TRUE)
-      write.table(datosdiatoms, file=paste(pdir,"phyto_optics/optics_phyto_recom_carbon.dat",sep=""),
+      cat("*** Diatom ***\n",file=paste(p_dir,"optics_phyto_recom_carbon.dat",sep=""), append = TRUE)
+      write.table(datosdiatoms, file=paste(p_dir,"optics_phyto_recom_carbon.dat",sep=""),
                   sep = "    ", row.names = FALSE, col.names = FALSE, quote = FALSE, append=TRUE)
       sink()    
       
 #############################################      
       
-      write.csv(datosothers,  file="/Users/ealvarez/Datos/Res_C20_radtrans/phyto_optics/datosothers_carbon.csv")
-      write.csv(datosdiatoms, file="/Users/ealvarez/Datos/Res_C20_radtrans/phyto_optics/datosdiatoms_carbon.csv")
+      write.csv(datosothers,  file=paste(p_dir, "datosothers_carbon.csv",sep=""))
+      write.csv(datosdiatoms, file=paste(p_dir, "datosdiatoms_carbon.csv",sep=""))
       
       
       
@@ -274,8 +270,7 @@ png(file=paste(path_figures, "Figure2_1_optics_PFTs_recom2_carbon.png", sep=""),
       
       
 ### Average mass-specific b (m2 mgC-1) to (m2 mmolC-1) ###
-      #dir<-"/Users/ealvarez/Datos/Dat_Aph/"
-      spectra<-read.csv(paste(dir,"csvs/scatter_mass_Dut2015.csv",sep=""), sep=";")
+      spectra<-read.csv(paste(p_dir,"scatter_mass_Dut2015.csv",sep=""), sep=";")
       #names(spectra)
       # Agregar por grupo
       resultado_bph  <- rbind(spectra$Small_B,  spectra$Diatom_B)
@@ -327,8 +322,7 @@ png(file=paste(path_figures, "Figure2_1_optics_PFTs_recom2_carbon.png", sep=""),
       # axis(4,at=seq(0+0.04,1-0.04, length=4),labels=c("water","phyto","cdom","nap"), cex.axis=1.2,las=1, font=2)        
       
       # Water
-      pdir <- paste(OS,"Datos/Res_C20_radtrans/phyto_optics/",sep="")
-      datos <- read.csv(paste(pdir,"absorb_Files_darwin3.csv", sep=""))
+      datos <- read.csv(paste(p_dir,"absorb_Files_darwin3.csv", sep=""))
       colores<-c("lightblue","darkblue","goldenrod1","darkslategray4","seagreen3","seagreen1","salmon3","salmon1")
       colores<-c(paleta[1],paleta[1],paleta[4],paleta[6],paleta[3],paleta[3],paleta[5],paleta[5])
       plot(datos$lambda, datos$sw_ab.m.1., las=1, type="l",
@@ -380,8 +374,7 @@ png(file=paste(path_figures, "Figure2_1_optics_PFTs_recom2_carbon.png", sep=""),
       par(mar=c(4,3.5,1,2))
       
       # Water
-      pdir <- paste(OS, "Datos/Res_C20_radtrans/phyto_optics/", sep="")
-      datos <- read.csv(paste(pdir,"absorb_Files_darwin3.csv", sep=""))
+      datos <- read.csv(paste(p_dir,"absorb_Files_darwin3.csv", sep=""))
       plot(datos$lambda, datos$sw_st.m.1., las=1, type="l",
            ylim=c(0,0.4),pch=19,lty=1, col=colores[1], ylab="", xlab=expression(lambda), lwd=2)
       abline(v=lambda_extremos, col="grey70")

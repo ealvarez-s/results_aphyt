@@ -1,11 +1,5 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-library(RNetCDF)
-library(akima)
-library(abind)
-library(plot3D)
-library(Hmisc)
-library(plotrix)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 #########################################
 ## 2D derived variables from model output
@@ -13,18 +7,16 @@ library(plotrix)
 # Zeu from broadband PAR (for spectral Zeu, it is necessary one run per waveband)
 # NPP and EXP (total annual)
 
-o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/",sep="")        
-p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/interpolated/",sep="")
-# Input: 
-# Output:     
-
-#path_figures<-paste(OS,"Datos/Res_C20_radtrans/radtrans_v5_marshall/",sep="")
+o_dir<-paste(global_path,"Res_model/",sep="")        
+p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+# Input: NetCDF files of model output (pasted with gluemncbig.py)
+# Output: .RData horizontal grids (zeu) or annual total (NPP) (in /Res_model/)  
+path_figures<-paste(global_path,"Figures/",sep="")
 
     # List of simulations
-    experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
-    modelnames<-experimentos$name[c(21,9)]
+    experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+    modelnames<-experimentos$name[c(21,9,30,31)]
     ruta<-o_dir
-    
     ##  experimentos$name[c(30,31)] are identical to experimentos$name[c(21,9)], just run in another machine (G100)
 
       
@@ -35,7 +27,7 @@ p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/interpolated/",sep="")
 
       for (w in 1:length(modelnames)){  
           modelname<-modelnames[w]
-          o_dir <- ruta[w]
+          #o_dir <- ruta[w]
           
           # Depth
           archivo<-"/grid.nc"
@@ -95,21 +87,15 @@ p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/interpolated/",sep="")
 
 
         ## Set of Zeu (broadband) per model
-        source("/Users/ealvarez/Programas/Funciones_varios/functions.r")
-        library(akima)
-        library(abind)
-        o_dir<-"/Users/ealvarez/Datos/Ser_Stan/global_14_aphyt/"        
-        p_dir<-"/Users/ealvarez/Datos/Ser_Stan/global_14_aphyt/interpolated/"
-
-        experimentos<-read.csv("/Users/ealvarez/Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv", sep=",")
-        modelnames<-experimentos$name[c(21,9,30,31)]
-        ruta<-experimentos$path[c(21,9,30,31)]
+        experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+        modelnames<-experimentos$name[c(21,9,30,31)]   
+        ruta<-o_dir
             
         nombre <- substring(modelnames,1,100)
         ZEU <- array(NA,dim=c(180,126,12,length(modelnames)))
         for (w in 1:length(modelnames)){  
             modelname<-modelnames[w]
-            load(paste(ruta[w],modelname,"/Zeu_3D10daily.RData",sep=""))
+            load(paste(ruta,modelname,"/Zeu_3D10daily.RData",sep=""))
                 longitude <- dimnames(resul)$x
                 latitude <- dimnames(resul)$y
                 fechas <- dimnames(resul)$t
@@ -127,11 +113,9 @@ p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/interpolated/",sep="")
 ##  NPP and EXP total annual  ##   PgC year-1    
 ################################    
 
-    o_dir<-"/Users/ealvarez/Datos/Ser_Stan/global_14_aphyt/"        
-    p_dir<-"/Users/ealvarez/Datos/Ser_Stan/global_14_aphyt/interpolated/"
-    experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
-    modelnames<-experimentos$name[c(21,9,30,31)]     
-    ruta<-experimentos$path[c(21,9,30,31)]
+   experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+   modelnames<-experimentos$name[c(30,31)]     
+   ruta<-o_dir
     
     # RESULTS
     NPPtotal <- rep(NA,length=length(modelnames))        # NPP & Export production (Pg year-1)
@@ -140,7 +124,7 @@ p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/interpolated/",sep="")
     
             for (w in 1:length(modelnames)){   
                 modelname<-modelnames[w]
-                o_dir<-ruta[w]
+                #o_dir<-ruta[w]
 
                 # depth
                 archivo<-"/grid.nc"

@@ -1,9 +1,5 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-#source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-library(RNetCDF)
-library(akima)
-library(abind)
-library(plot3D)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ########################################################
 ### Interpolate SURFACE variables from model output  ###
@@ -12,20 +8,17 @@ library(plot3D)
 # Reflectance (x,y,l)
 # Biomass: Chla (log and lineal), PPC:TChla, CDOM and Detr (x,y)
 # IOP's surface (x,y,l)
-
-    o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/",sep="")        
-    p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/Res_model/interpolated/",sep="")
-# Input: 
-# Output:     
-    
-    #path_figures<-paste(OS,"Datos/Res_C20_radtrans/radtrans_v5_marshall/",sep="")
+    o_dir<-paste(global_path,"Res_model/",sep="")        
+    p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+# Input: NetCDF files of model output (pasted with gluemncbig.py)
+# Output: .RData fields 2x2 surface (in /interpolated/)  
+    path_figures<-paste(global_path,"Figures/",sep="")
     
     # List of simulations
-    experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+    experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
     modelnames<-experimentos$name[c(9:29)]
     ruta<-o_dir
-    
-    ##  experimentos$name[c(30,31)] are identical to experimentos$name[c(21,9)], just run in another machine (G100)
+    ##  experimentos$name[c(30,31)] are identical to experimentos$name[c(21,9)], just run in another machine (GALILEO vs G100)
     
     
 #################
@@ -33,7 +26,7 @@ library(plot3D)
 #################    
     for (w in 1:length(modelnames)){
         modelname<-modelnames[w]
-        o_dir<-ruta[w]     
+        #o_dir<-ruta[w]     
 
         # Reflectance
         archivo <-"/RADiags3DFlux.nc"
@@ -127,7 +120,7 @@ library(plot3D)
             
         for (w in 1:length(modelnames)){
         modelname<-modelnames[w]
-        o_dir<-ruta[w]
+        #o_dir<-ruta[w]
                     # depth
                     archivo<-"/grid.nc"
                     filename <- paste(o_dir,modelname,archivo, sep="")
@@ -213,7 +206,7 @@ library(plot3D)
    
          for (w in 1:length(modelnames)){
              modelname<-modelnames[w]
-             o_dir<-ruta[w]
+             #o_dir<-ruta[w]
                     # depth
                     archivo<-"/grid.nc"
                     filename <- paste(o_dir,modelname,archivo, sep="")
@@ -306,7 +299,7 @@ library(plot3D)
 
       for (w in 1:length(modelnames)){
           modelname<-modelnames[w]
-          o_dir<-ruta[w]             
+          #o_dir<-ruta[w]             
              # depth
              archivo<-"/grid.nc"
              filename <- paste(o_dir,modelname,archivo, sep="")
@@ -395,7 +388,7 @@ library(plot3D)
 
     for (g in 1:length(modelnames)){
           modelname<-modelnames[g]
-          o_dir<-ruta[g]
+          #o_dir<-ruta[g]
              
              # Depth
              archivo<-"/grid.nc"
@@ -604,7 +597,7 @@ library(plot3D)
         
         for (w in 1:length(modelnames)){
           modelname<-modelnames[w]
-          o_dir<-ruta[w]
+          #o_dir<-ruta[w]
           # depth
           archivo<-"/grid.nc"
           filename <- paste(o_dir,modelname,archivo, sep="")

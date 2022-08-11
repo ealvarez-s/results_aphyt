@@ -1,20 +1,19 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-library(akima)
-library(abind)
-library(plot3D)
-library(unikn)  
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 ###############################################################
 ### COMPARE SPECTRAL SHAPES Rrs MODEL vs SATELLITE/OBSERVATIONS
 ###############################################################
 
-o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/",sep="")        
-p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/",sep="") 
-path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="")
-experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+  o_dir<-paste(global_path,"Res_model/",sep="")        
+  p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+  path_figures<-paste(global_path,"Figures/",sep="")
+  # List of simulations
+  experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+  s_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
+  is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
     modelnames<-experimentos$name[c(21,9)]
-    ruta<-paste(OS,experimentos$path[c(21,9)],sep="")
+    ruta<-o_dir
     nombre <- c(expression(paste({a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
                 expression(paste({a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
 
@@ -40,10 +39,9 @@ experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall
         model_mask[model_mask<=1.0e-9] <- 0
         
         # SAT
-        o_dir <- paste(OS, "Datos/Dat_Satelite/", sep="")
         landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
         landa_sat <- c(412,443,490,510,555,670)
-        load(paste(o_dir,"climatologies_2012_2018/media_seasonal_Rrs_2deg_OCCCI_2012_2018.RData",sep=""))
+        load(paste(s_dir,"climatologies_2012_2018/media_seasonal_Rrs_2deg_OCCCI_2012_2018.RData",sep=""))
         res <- med
             # ANNUAL 
             res <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
@@ -54,8 +52,7 @@ experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall
             #sat_TR <- apply(res[,26:65,], MARGIN="l", FUN=mean, na.rm=TRUE)
 
         # In situ
-        o_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/", sep="")
-        load(paste(o_dir,"grids/media_annual_Rrs.Rdata",sep=""))
+        load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))
         lambda_obs <- lambda
             # ANNUAL
             for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
@@ -108,12 +105,11 @@ png(file=paste(path_figures,"Figure11_Reflectance_spectra_lambda.png",sep=""), w
 #### Only pixels with 1 +- 0.1 mg Chla m-3       
 #############        
         # In situ
-        o_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/",sep="")
-        load(paste(o_dir,"grids/media_annual_Rrs.Rdata",sep=""))
+        load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))
         lambda_obs <- lambda
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
-          load(paste(o_dir,"grids/media_annual_Chla.Rdata",sep=""))
+          load(paste(is_dir,"/media_annual_Chla.Rdata",sep=""))
           cloro <- res[,,1]
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][cloro<=0.9 | cloro>=1.1] <- NA}
           obs <- apply(matriz_annual, MARGIN=c("l"), FUN=mean, na.rm=TRUE)
@@ -140,12 +136,11 @@ png(file=paste(path_figures,"Figure11_Reflectance_spectra_lambda.png",sep=""), w
 #### Only pixels with 0.5 +- 0.05 mg Chla m-3       
 #############        
         # In situ
-        o_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/",sep="")
-        load(paste(o_dir,"grids/media_annual_Rrs.Rdata",sep=""))
+        load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))
         lambda_obs <- lambda
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
-          load(paste(o_dir,"grids/media_annual_Chla.Rdata",sep=""))
+          load(paste(is_dir,"/media_annual_Chla.Rdata",sep=""))
           cloro <- res[,,1]
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][cloro<=0.45 | cloro>=0.55] <- NA}
           obs <- apply(matriz_annual, MARGIN=c("l"), FUN=mean, na.rm=TRUE)
@@ -172,12 +167,11 @@ png(file=paste(path_figures,"Figure11_Reflectance_spectra_lambda.png",sep=""), w
 #### Only pixels with 0.1 +- 0.01 mg Chla m-3       
 #############        
         # In situ
-        o_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/",sep="")
-        load(paste(o_dir,"grids/media_annual_Rrs.Rdata",sep=""))
+        load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))
         lambda_obs <- lambda
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
-          load(paste(o_dir,"grids/media_annual_Chla.Rdata",sep=""))
+          load(paste(is_dir,"/media_annual_Chla.Rdata",sep=""))
           cloro <- res[,,1]
           for (w in 1:length(lambda_obs)){matriz_annual[,,w][cloro<=0.09 | cloro>=0.11] <- NA}
           obs <- apply(matriz_annual, MARGIN=c("l"), FUN=mean, na.rm=TRUE)
@@ -241,7 +235,7 @@ png(file=paste(path_figures,"Figure12_Reflectance_spectral_shape_biomes.png",sep
 ### Find Biome in each grid point: both sat and model are in 2 degrees
 ###################
         # Time_Varying_Biomes.nc from (Fay & McKinley 2014)
-        load(paste(OS,"Datos/Dat_Biomes/Biomes_global.RData",sep=""))
+        load(paste(global_path,"Misc/Biomes_global.RData",sep=""))
         long<-c(seq(0.5,179.5,by=1),seq(-179.5,-0.5,by=1))
         matrix_lon<-matrix(rep(seq(-179,179,by=2),times=90),ncol=90,byrow=F)
         matrix_lat<-matrix(rep(seq(-89,89,by=2),times=180), ncol=90,byrow=T)
@@ -278,10 +272,9 @@ png(file=paste(path_figures,"Figure12_Reflectance_spectral_shape_biomes.png",sep
           if (q==1|q==8|q==17) par(mar=c(0,2,0,0))
           
           # SAT
-          o_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
           landas_sat <- c("Rrs_412","Rrs_443","Rrs_490","Rrs_510","Rrs_555","Rrs_670")
           landa_sat <- c(412,443,490,510,555,670)
-          load(paste(o_dir,"climatologies_2012_2018/media_seasonal_Rrs_2deg_OCCCI_2012_2018.RData",sep=""))
+          load(paste(s_dir,"climatologies_2012_2018/media_seasonal_Rrs_2deg_OCCCI_2012_2018.RData",sep=""))
           res <- med
               # ANNUAL 
               res <- apply(res, MARGIN=c("x","y","l"), FUN=mean, na.rm=TRUE)
@@ -291,8 +284,7 @@ png(file=paste(path_figures,"Figure12_Reflectance_spectral_shape_biomes.png",sep
               sat <- apply(res, MARGIN="l", FUN=mean, na.rm=TRUE)
               
           # In situ
-          o_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/",sep="")
-          load(paste(o_dir,"grids/media_annual_Rrs.Rdata",sep=""))
+          load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))
           lambda_obs <- lambda
               for (w in 1:length(lambda_obs)){matriz_annual[,,w][model_mask==0] <- NA}
               for (w in 1:length(lambda_obs)){matriz_annual[,,w][is.na(biomes)] <- NA}

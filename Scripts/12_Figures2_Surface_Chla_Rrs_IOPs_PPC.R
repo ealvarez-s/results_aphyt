@@ -1,15 +1,5 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-library(Hmisc)
-library(Metrics)
-library(plotrix)
-library(RNetCDF)
-library(akima)
-library(abind)
-library(plot3D)
-library(unikn)      
-library(viridisLite)
-library(wesanderson)
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 #######################         
 #### FIGURES in SURFACE constant vs variable
@@ -17,13 +7,14 @@ library(wesanderson)
 # Chla, Reflectance, IOP's, PPC
 # Summary metrics
 
-         o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/",sep="")        
-         p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/",sep="")
-         #path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/Figuras/Figuras_2021_review/",sep="")
-         path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="") 
-         experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
-         s_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
-         
+o_dir<-paste(global_path,"Res_model/",sep="")        
+p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+path_figures<-paste(global_path,"Figures/",sep="")
+# List of simulations
+experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+s_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
+is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+
          modelnames<-experimentos$name[c(21,9)]
          ruta<-experimentos$path[c(21,9)]        
          nombre <- c(expression(paste("EXP-1: ",{{"a*"}}[PH],"(", lambda, ") constant",sep="")),
@@ -76,14 +67,14 @@ library(wesanderson)
   ## CHLA log
   ##############    
   ##### In situ MAREDAT and others
-         is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids_pigments",sep="")  
+         is_dir <- paste(global_path,"Dat_observations/HPLC/grids_pigments",sep="") 
          load(paste(is_dir,"/TChla_insitu_new2.RData",sep=""))
          longitude<-as.numeric(dimnames(TChla_ALL)$x)
          latitude<-as.numeric(dimnames(TChla_ALL)$y)        
          matriz1  <- (apply(TChla_ALL[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE))/1e+3 # ng L-1 to ug L-1
   ##### In situ Valente and others: No usaria esta!!
-         is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
-         load(paste(is_dir,"media_annual_Chla.Rdata",sep=""))
+         is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+         load(paste(is_dir,"/media_annual_Chla.Rdata",sep=""))
          matriz2  <- apply(res[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE) # ug L-1
          nueva<-abind(matriz1, matriz2, along=0.5)
          matriz<-apply(nueva,MARGIN=c(2,3), mean, na.rm=TRUE)
@@ -92,7 +83,7 @@ library(wesanderson)
                  zlim=c(-2,1.2),las=1,bty="n", main="TChla in situ 1988-2019", xaxt="n", yaxt="n",
                  cex.axis=1.0, cex.lab=1.0, cex=1.2,xlab="", ylab="", colkey=F)
              # Map
-             load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+             load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
              contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
              axis(2, at=seq(-90,90,length=10), labels=T,   las=1)
              axis(1, at=seq(-180,180,length=19), labels=FALSE,  las=1)
@@ -112,7 +103,7 @@ library(wesanderson)
          latitude<-(-as.numeric(dimnames(res)$y))
          image2D(x=longitude, y=latitude, media, col=viridis(100), las=1, cex.axis=0.8, colkey=FALSE,main="Chla OC-CCI 2012-2018",xaxt="n", yaxt="n",zlim=c(-2,1.2))
              # Map
-             load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+             load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
              contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
              axis(2, at=seq(-90,90,length=10), labels=FALSE,   las=1)
              axis(1, at=seq(-180,180,length=19), labels=FALSE,  las=1)
@@ -151,7 +142,7 @@ n_chla_sat<-c(NA,NA)
            image2D(x=longitude, y=latitude, mod,  col=viridis(100), las=1, cex.axis=0.8, main=nombre[w], colkey=FALSE,xaxt="n", yaxt="n",zlim=c(-2,1.2))
            
            # Map
-           load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+           load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
            contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50", xaxt="n", yaxt="n", bty="n",add=T)
            axis(2, at=seq(-90,90,length=10), labels=FALSE,   las=1)
            axis(1, at=seq(-180,180,length=19), labels=FALSE,  las=1)
@@ -177,7 +168,7 @@ n_chla_sat<-c(NA,NA)
   ## PPC:TChla      
   ############      
          # In situ
-         is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids_pigments",sep="")  
+         is_dir <- paste(global_path,"Dat_observations/HPLC/grids_pigments",sep="") 
          load(paste(is_dir,"/PPCinsitu_new3.RData",sep=""))         
          matriz1  <- apply(PPCinsitu_ALL[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE)
          matriz11 <- apply(PPCinsitu_NEW[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE)
@@ -186,7 +177,7 @@ n_chla_sat<-c(NA,NA)
          par(mar=c(1,1,1,0))
          image2D(x=longitude, y=latitude, matriz1, col=viridis(100), las=1,bty="n", main="PPC:TChla in situ 1992-2019", xaxt="n", yaxt="n", zlim=c(0.0,1),cex.axis=1.0, cex.lab=1.0, cex=1.2,xlab="", ylab="", mgp=c(1.5,1,0), colkey=FALSE)
              # Map
-             load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata",sep=""))
+             load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
              contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
              axis(2, at=seq(-90,90,length=10), labels=T,   las=1)
              axis(1, at=seq(-180,180,length=19), labels=T,  las=1)
@@ -214,7 +205,7 @@ n_ppc<-c(NA,NA)
            n_ppc<- nrow(x)
            image2D(x=longitude, y=latitude, mod,  col=viridis(100), las=1, cex.axis=0.8, main=nombre[w], colkey=FALSE,xaxt="n", yaxt="n",zlim=c(0.0,1))
                # Map
-               load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+               load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50", xaxt="n", yaxt="n", bty="n",add=T)
                axis(2, at=seq(-90,90,length=10), labels=FALSE,   las=1)
                axis(1, at=seq(-180,180,length=19), labels=T,  las=1)
@@ -267,14 +258,14 @@ n_ppc<-c(NA,NA)
          
 ##### In situ Rrs
 #################         
-         is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+         is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
          load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))           
          
          #400
          image2D(x=longitude, y=latitude,matriz_annual[,,1], col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                  main=expression(paste(R[RS], " (400nm) ",italic("in situ"), sep="")))
                  # Map
-                 load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                 load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                  contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                  axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                  axis(1, at=seq(-180,180,length=10), labels=FALSE,  las=1)
@@ -285,7 +276,7 @@ n_ppc<-c(NA,NA)
          image2D(x=longitude, y=latitude,matriz_annual[,,3], col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                  main=expression(paste(R[RS], " (450nm) ",italic("in situ"), sep="")))
                  # Map
-                 load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                 load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                  contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                  axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                  axis(1, at=seq(-180,180,length=10), labels=FALSE,  las=1)
@@ -296,7 +287,7 @@ n_ppc<-c(NA,NA)
          image2D(x=longitude, y=latitude, matriz_annual[,,4], col=custom_scale, zlim=c(0,0.015), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                  main=expression(paste(R[RS], " (475nm) ",italic("in situ"), sep="")))
                  # Map
-                 load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                 load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                  contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                  axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                  axis(1, at=seq(-180,180,length=10), labels=FALSE,  las=1)
@@ -307,7 +298,7 @@ n_ppc<-c(NA,NA)
          image2D(x=longitude, y=latitude, matriz_annual[,,5], col=custom_scale, zlim=c(0,0.010), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                  main=expression(paste(R[RS], " (500nm) ",italic("in situ"), sep="")))
                  # Map
-                 load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                 load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                  contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                  axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                  axis(1, at=seq(-180,180,length=10), labels=FALSE,  las=1)
@@ -318,7 +309,7 @@ n_ppc<-c(NA,NA)
          image2D(x=longitude, y=latitude, matriz_annual[,,7], col=custom_scale, zlim=c(0,0.005), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                  main=expression(paste(R[RS], " (550nm) ",italic("in situ"), sep="")))
                  # Map
-                 load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                 load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                  contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                  axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                  axis(1, at=seq(-180,180,length=10), labels=FALSE,  las=1)
@@ -328,7 +319,7 @@ n_ppc<-c(NA,NA)
          image2D(x=longitude, y=latitude, matriz_annual[,,12], col=custom_scale, zlim=c(0,0.001), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                  main=expression(paste(R[RS], " (675nm) ",italic("in situ"), sep="")))
                  # Map
-                 load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                 load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                  contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                  axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                  axis(1, at=seq(-180,180,length=10),
@@ -354,7 +345,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media412, col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                    main=expression(paste(R[RS], " (412nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -366,7 +357,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media443, col=custom_scale, zlim=c(0,0.020), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                    main=expression(paste(R[RS], " (443nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -378,7 +369,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media490, col=custom_scale, zlim=c(0,0.015), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                    main=expression(paste(R[RS], " (490nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -390,7 +381,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media510, col=custom_scale, zlim=c(0,0.010), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                    main=expression(paste(R[RS], " (510nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -402,7 +393,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media555, col=custom_scale, zlim=c(0,0.005), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                    main=expression(paste(R[RS], " (555nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -414,7 +405,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media670, col=custom_scale, zlim=c(0,0.001), las=1, xaxt="n", yaxt="n", colkey=FALSE,
                    main=expression(paste(R[RS], " (670nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
@@ -453,7 +444,7 @@ n_ppc<-c(NA,NA)
                    nrow(x)
                    text(x=75,y=-76,labels=paste("R = ",round(R_412,3)), font=2, cex=1.1)
                         # Map
-                        load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                        load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                         contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                         axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                         axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -479,7 +470,7 @@ n_ppc<-c(NA,NA)
                    nrow(x)
                    text(x=75,y=-76,labels=paste("R = ",round(R_443,3)), font=2, cex=1.1)
                          # Map
-                         load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                         load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                          contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                          axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                          axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -503,7 +494,7 @@ n_ppc<-c(NA,NA)
                    R_490<- rcorr(x, type="pearson")$r[1,2  ]
                    text(x=75,y=-76,labels=paste("R = ",round(R_490,3)), font=2, cex=1.1)
                          # Map
-                         load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                         load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                          contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                          axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                          axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -527,7 +518,7 @@ n_ppc<-c(NA,NA)
                    R_510<- rcorr(x, type="pearson")$r[1,2  ]
                    text(x=75,y=-76,labels=paste("R = ",round(R_510,3)), font=2, cex=1.1)           
                          # Map
-                         load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                         load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                          contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                          axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                          axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -552,7 +543,7 @@ n_ppc<-c(NA,NA)
                    R_555<- rcorr(x, type="pearson")$r[1,2]
                    text(x=75,y=-76,labels=paste("R = ",round(R_555,3)), font=2, cex=1.1) 
                            # Map
-                           load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                           load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep="")) 
                            contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                            axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                            axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -576,7 +567,7 @@ n_ppc<-c(NA,NA)
                    R_670<- rcorr(x, type="pearson")$r[1,2]
                    text(x=75,y=-76,labels=paste("R = ",round(R_670,3)), font=2, cex=1.1)
                            # Map
-                           load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                           load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                            contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                            axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                            axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
@@ -648,7 +639,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media, col=custom_scale, zlim=c(0,0.2), las=1, xaxt="n", yaxt="n",colkey=F,
                    main=expression(paste(a[TOT], " (443nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -672,7 +663,7 @@ n_ppc<-c(NA,NA)
                    tot<- rcorr(x, type="pearson")$r[1,2]
                    text(x=75,y=-77,labels=paste("R = ",round(tot,3)), font=2, cex=textinner)
                          # Map
-                         load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                         load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                          contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                          axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                          axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -691,12 +682,12 @@ n_ppc<-c(NA,NA)
            par(mar=c(1,0.5,1,0))
 ############################           
            ##### In situ
-           is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+           is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
            load(paste(is_dir,"/media_annual_Aph.Rdata",sep=""))           
            image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n", colkey=F,
                   main=expression(paste(a[PH], " (450nm) ",italic("in situ"), sep="")))
                   # Map
-                  load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                  load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                   contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                   axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                   axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -718,7 +709,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media, col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n",colkey=F,
                    main=expression(paste(a[PH], " (443nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -748,7 +739,7 @@ n_ppc<-c(NA,NA)
                      aph<- rcorr(x, type="pearson")$r[1,2]
                      text(x=75,y=-77,labels=paste("R = ",round(aph,3)), font=2, cex=textinner)
                            # Map
-                           load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                           load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                            contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                            axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                            axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -767,12 +758,12 @@ n_ppc<-c(NA,NA)
            par(mar=c(1,0.5,1,0))
 ############################           
            ##### In situ
-           is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+           is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
            load(paste(is_dir,"/media_annual_Anap.Rdata",sep=""))
            image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, zlim=c(0,0.03), las=1, xaxt="n", yaxt="n", colkey=F,
                     main=expression(paste(a[NAP], " (450nm) ",italic("in situ"), sep="")))
                     # Map
-                    load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                    load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                     contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                     axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                     axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -799,7 +790,7 @@ n_ppc<-c(NA,NA)
                      aph<- rcorr(x, type="pearson")$r[1,2  ]
                      text(x=-110,y=-77,labels=paste("R = ",round(aph,3)), font=2, cex=textinner)
                            # Map
-                           load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                           load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                            contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                            axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                            axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -818,12 +809,12 @@ n_ppc<-c(NA,NA)
            par(mar=c(1,0.5,1,0))
 ############################           
            ##### In situ
-           is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+           is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
            load(paste(is_dir,"/media_annual_Ap.Rdata",sep=""))           
            image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n", colkey=F,
                     main=expression(paste(a[P], " (450nm) ",italic("in situ"), sep="")))
                     # Map
-                    load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                    load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                     contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                     axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                     axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -849,7 +840,7 @@ n_ppc<-c(NA,NA)
                      aph<- rcorr(x, type="pearson")$r[1,2  ]
                      text(x=-110,y=-77,labels=paste("R = ",round(aph,3)), font=2, cex=textinner)
                            # Map
-                           load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                           load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                            contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                            axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                            axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -868,12 +859,12 @@ n_ppc<-c(NA,NA)
            par(mar=c(1,0.5,1,0))
 #############################           
            ##### In situ
-           is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+           is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
            load(paste(is_dir,"/media_annual_Acdom.Rdata",sep=""))           
            image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, zlim=c(0,0.1), las=1, xaxt="n", yaxt="n", colkey=F,
                       main=expression(paste(a[CDOM], " (450nm) ",italic("in situ"), sep="")))
                       # Map
-                      load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                      load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                       contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                       axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                       axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
@@ -899,7 +890,7 @@ n_ppc<-c(NA,NA)
                      aph<- rcorr(x, type="pearson")$r[1,2  ]
                      text(x=-110,y=-77,labels=paste("R = ",round(aph,3)), font=2, cex=textinner)
                              # Map
-                             load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                             load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                              contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                              axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                              axis(1, at=seq(-180,180,length=10), labels=F,  las=1)
@@ -935,7 +926,7 @@ n_ppc<-c(NA,NA)
            image2D(x=longitude, y=latitude,media, col=custom_scale, zlim=c(0,0.1), las=1,xaxt="n", yaxt="n",colkey=F,
                    main=expression(paste(a[DG], " (443nm) ",italic("OC-CCI"), sep="")))
                    # Map
-                   load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                   load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                    contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                    axis(2, at=seq(-90,90,length=5), labels=T,   las=1)
                    axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
@@ -959,7 +950,7 @@ n_ppc<-c(NA,NA)
                        adg<- rcorr(x, type="pearson")$r[1,2]
                        text(x=75,y=-77,labels=paste("R = ",round(adg,3)), font=2, cex=textinner)
                              # Map
-                             load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+                             load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
                              contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
                              axis(2, at=seq(-90,90,length=5), labels=F,   las=1)
                              axis(1, at=seq(-180,180,length=10), labels=c("",seq(-180,180,length=10)[2],"",seq(-180,180,length=10)[4],"",seq(-180,180,length=10)[6],"",seq(-180,180,length=10)[8],"",seq(-180,180,length=10)[10]),  las=1)
@@ -1006,15 +997,15 @@ n_ppc<-c(NA,NA)
                    latitude<-as.numeric(dimnames(res)$y)
                    
                    ##### In situ MAREDAT and others
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids_pigments",sep="")  
+                   is_dir <- paste(global_path,"Dat_observations/HPLC/grids_pigments",sep="") 
                    load(paste(is_dir,"/TChla_insitu_new2.RData",sep=""))                           
                    longitude<-as.numeric(dimnames(TChla_ALL)$x)
                    latitude<-as.numeric(dimnames(TChla_ALL)$y)        
                    matriz1  <- (apply(TChla_ALL[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE))/1e+3 # ng L-1 to ug L-1
       
                    ##### In situ Valente and others
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
-                   load(paste(is_dir,"media_annual_Chla.Rdata",sep=""))
+                   is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+                   load(paste(is_dir,"/media_annual_Chla.Rdata",sep=""))
                    dim(res)
                    matriz2  <- apply(res[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE) # ug L-1
                    
@@ -1037,7 +1028,7 @@ n_ppc<-c(NA,NA)
       #### PPC:TChla
       ##############             
                    # In situ
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids_pigments",sep="")  
+                   is_dir <- paste(global_path,"Dat_observations/HPLC/grids_pigments",sep="") 
                    load(paste(is_dir,"/PPCinsitu_new3.RData",sep=""))  
                    matriz1  <- apply(PPCinsitu_ALL[,,1:2], MARGIN=c("x","y"), mean, na.rm=TRUE)
                    matriz1[matriz1=="Inf" | matriz1=="-Inf"] <- NA
@@ -1066,7 +1057,7 @@ n_ppc<-c(NA,NA)
                    z <- mod[,,12]
 
                    ##### In situ Rrs
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+                   is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
                    load(paste(is_dir,"/media_annual_Rrs.Rdata",sep=""))           
       
                    # Positions for Taylor Diagram
@@ -1145,7 +1136,7 @@ n_ppc<-c(NA,NA)
                    z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
                    z[z<1e-5] <- NA
                    ##### In situ
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+                   is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
                    load(paste(is_dir,"/media_annual_Aph.Rdata",sep=""))           
 
                    # Positions for Taylor Diagram
@@ -1163,7 +1154,7 @@ n_ppc<-c(NA,NA)
                    z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
                    z[z<1e-5] <- NA
                    ##### In situ
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+                   is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
                    load(paste(is_dir,"/media_annual_Anap.Rdata",sep=""))           
                    
                    # Positions for Taylor Diagram
@@ -1181,7 +1172,7 @@ n_ppc<-c(NA,NA)
                    z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
                    z[z<1e-5] <- NA
                    ##### In situ
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+                   is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
                    load(paste(is_dir,"/media_annual_Ap.Rdata",sep=""))           
                    
                    # Positions for Taylor Diagram
@@ -1199,7 +1190,7 @@ n_ppc<-c(NA,NA)
                    z <- apply(res[,,3,],MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
                    z[z<1e-5] <- NA
                    ##### In situ
-                   is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+                   is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
                    load(paste(is_dir,"/media_annual_Acdom.Rdata",sep=""))           
                    
                    # Positions for Taylor Diagram
@@ -1227,7 +1218,6 @@ n_ppc<-c(NA,NA)
       #### CHLA log
       #################  
                    modelname<-modelnames[w]
-                   s_dir <- paste(OS,"Datos/Dat_Satelite/", sep="")
                    load(paste(p_dir,"1cloro_log/",modelname,".RData",sep=""))
                    mod <- res
       
@@ -1421,7 +1411,6 @@ n_ppc<-c(NA,NA)
 ###########################################################
 ## FIGURE 4: Taylor diagrams Model vs In situ and Satellite
 ###########################################################
-source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
 
   png(file=paste(path_figures,"Figure4_Taylor_diagrams_split.png",sep=""),width = 1210, height = 730, units = "px", pointsize = 24, bg = "white") 
     par(mfcol=c(2,3)) 
@@ -1658,7 +1647,7 @@ png(file=paste(path_figures,"Figure5_Aph_surface.png",sep=""), width = 1210, hei
                 las=1,xaxt="n", yaxt="n",colkey=F, cex.axis=cexaxis, cex.main=labsize, 
                 main=expression(paste(a[PH], " (443nm) OC-CCI 2012-2018",sep="")))  
               # Map
-              load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+              load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
               contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
               axis(2, at=seq(-90,90,length=10),   cex.axis=cexaxis,   las=1)
               axis(1, at=seq(-160,160,length=9),  cex.axis=cexaxis,   las=1)     
@@ -1666,13 +1655,13 @@ png(file=paste(path_figures,"Figure5_Aph_surface.png",sep=""), width = 1210, hei
               text(x=82,y=-78, labels="n = 9466", font=2, cex=1.1)
 
 ##### In situ
-        is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+        is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
         load(paste(is_dir,"/media_annual_Aph.Rdata",sep=""))  
         latitude<-seq(-89,89,by=2)
         image2D(x=longitude, y=latitude,matriz_annual[,,1,3], col=custom_scale, cex.main=labsize,
                 zlim=c(0,0.1), las=1, xaxt="n", yaxt="n", colkey=F, main=expression(paste(a[PH], " (450nm) in situ 1997-2019",sep="")), cex.axis=cexaxis)
               # Map
-              load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+              load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
               contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
               axis(2, at=seq(-90,90,length=10),   cex.axis=cexaxis,   las=1)
               axis(1, at=seq(-160,160,length=9), cex.axis=cexaxis,   las=1)
@@ -1688,7 +1677,7 @@ png(file=paste(path_figures,"Figure5_Aph_surface.png",sep=""), width = 1210, hei
           image2D(x=longitude, y=latitude,z, col=custom_scale, zlim=c(0,0.1), cex.main=labsize,
                   las=1, xaxt="n", yaxt="n", main=nombre[w], colkey=F, cex.axis=cexaxis)  #, zlim=c(-1.8,1.8)
           # Map
-          load(paste(OS,"Datos/Dat_Batimetria/batimetria_world_degree6.Rdata", sep=""))
+          load(paste(global_path,"Misc/batimetria_world_degree6.Rdata", sep=""))
           contour(x=lon, y=lat, z=prof,levels=c(0), lwd=0.4, ylab="", xlab="", drawlabels=FALSE, las=1, xaxs="i", yaxs="i", col="grey50",xaxt="n", yaxt="n", bty="n", add=T)
           axis(2, at=seq(-90,90,length=10),   cex.axis=cexaxis,   las=1)
           axis(1, at=seq(-160,160,length=9), cex.axis=cexaxis,   las=1)
@@ -1749,7 +1738,7 @@ png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, h
     layout.show(2)
 
         ##### In situ
-        is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+        is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
         load(paste(is_dir,"/media_seasonal_Aph.Rdata",sep=""))   
         #dim(matriz_seasonal)                      
         situ<-matriz_seasonal[,,1,,3]
@@ -1758,8 +1747,6 @@ png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, h
 
 ##### A: EXP-1
 ##################          
-        p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/",sep="")
-        s_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
         modelname<-modelnames[1]
         load(paste(p_dir,"2iop_aph/",modelname,".RData",sep=""))
         z <- apply(res,MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
@@ -1860,8 +1847,6 @@ png(file=paste(path_figures,"Figure7_Aph_latitude2.png",sep=""), width = 1100, h
 ##### B: EXP-2
 ##################          
           par(mar=c(2,2,1,1))
-          p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/",sep="")
-          s_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
           modelname<-modelnames[2]
           load(paste(p_dir,"2iop_aph/",modelname,".RData",sep=""))
           z <- apply(res,MARGIN=c("x","y"),FUN=mean, na.rm=TRUE)
@@ -2001,14 +1986,14 @@ png(file=paste(path_figures,"Figure8_aph_metrics.png",sep=""), width = 900, heig
           modelname<-modelnames[w]  
           ### Mod             
           load(paste(p_dir,"2iop_aph/",modelname,".RData",sep=""))
-          dim(res)
+          #dim(res)
           ### In situ
-          is_dir <- paste(OS,"Datos/Dat_SGlobal_depth/Valente-BO/Valente-etal_2019/grids/",sep="")
+          is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
           load(paste(is_dir,"/media_seasonal_Aph.Rdata",sep=""))   
           dim(matriz_seasonal[,,1,,])
           ### Sat
           load(paste(s_dir,"climatologies_2012_2018/media_seasonal_Aph_2deg_OCCCI_2012_2018.RData",sep=""))
-          dim(med) 
+          #dim(med) 
           
           for (l in c(1,3,4,5)){    
                 #### Aph mod

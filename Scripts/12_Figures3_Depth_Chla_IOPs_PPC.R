@@ -1,41 +1,31 @@
-if (Sys.info()['sysname']=="Windows") {OS<-"C:/"} else {OS<-paste("/Users/",Sys.info()['user'],"/", sep="")}
-source(paste(OS,"Programas/Funciones_varios/functions.r",sep=""))
-library(Hmisc)
-library(plotrix)
-library(plot3D)
-library(RNetCDF)
-library(akima)
-library(abind)
-library(unikn)      
-library(viridisLite)
-library(wesanderson)
-
+source("00_Summary_EDITME.R")
+source("functions_misc.R")
 
 #######################         
 #### FIGURES in DEPTH constant vs variable
 #######################  
 # Chla, IOPs, Dominance Abs/Scat
 
-      o_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/",sep="")        
-      p_dir<-paste(OS,"Datos/Ser_Stan/global_14_aphyt/interpolated/",sep="")
-      #path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/Figuras/Figuras_2021_review/",sep="")
-      path_figures<-paste(OS,"Documentos/5_Trabajos/20_Radtrans_aph/reviews_coauthors2/para_enviar_JAMES/Figuras/",sep="")
-      experimentos<-read.csv(paste(OS,"Datos/Ser_Stan/global_14_aphyt/run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
-      s_dir <- paste(OS,"Datos/Dat_Satelite/",sep="")
-
+  o_dir<-paste(global_path,"Res_model/",sep="")        
+  p_dir<-paste(global_path,"Res_model/interpolated/",sep="")
+  path_figures<-paste(global_path,"Figures/",sep="")
+  # List of simulations
+  experimentos<-read.csv(paste(o_dir,"run_log_marshall_PPC_PS_SA_G100.csv",sep=""), sep=",")
+  s_dir <- paste(global_path,"Dat_observations/satellite/",sep="")
+  is_dir <- paste(global_path,"Dat_observations/optics/grids_optics",sep="")
+  
+  # NPP
+  load(paste(o_dir,"Tannual_NPP_final4.RData",sep=""))     
+  NPP<-NPPtotal
+  EXP<-EXPtotal
+  # Zeu
+  load(paste(o_dir,"Zeu_3D10daily_final4.RData",sep=""))    
+  
       modelnames<-experimentos$name[c(21,9)]
       ruta<-experimentos$path[c(21,9)]        
       nombre <- c(expression(paste("EXP-1: ",{a^{"*"}}[PH],"(", lambda, ") constant",sep="")),
                   expression(paste("EXP-2: ",{a^{"*"}}[PH],"(", lambda, ") variable",sep="")))
       
-      
-            # NPP
-            load(paste(OS,"Datos/Ser_G100/global_14_aphyt/Tannual_NPP_final4.RData",sep=""))     
-            NPP<-NPPtotal
-            EXP<-EXPtotal
-            # Zeu
-            load(paste(o_dir,"Zeu_3D10daily_final4.RData",sep=""))    
-    
 
             ## Color palette
             mycol1<-usecol(pal_bordeaux,n=4)
